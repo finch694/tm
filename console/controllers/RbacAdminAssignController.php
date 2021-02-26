@@ -14,7 +14,7 @@ class RbacAdminAssignController extends Controller
 {
     public function actionInit($id){
         if (!$id || is_integer($id)){
-            $this->stdout('id must be correct\n',Console::BG_RED);
+            $this->stdout("id must be correct\n",Console::BG_RED);
             return ExitCode::UNSPECIFIED_ERROR;
         }
         $user = (new User())->findIdentity($id);
@@ -26,7 +26,7 @@ class RbacAdminAssignController extends Controller
         $roleAdmin = $auth->getRole('admin');
         $auth->revokeAll($id);
         $auth->assign($roleAdmin,$id);
-        $this->stdout('done\n',Console::BG_GREEN);
+        $this->stdout("done\n",Console::BG_GREEN);
         return ExitCode::OK;
 
     }

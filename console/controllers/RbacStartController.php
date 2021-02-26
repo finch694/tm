@@ -23,8 +23,8 @@ class RbacStartController extends Controller
         $manager->description = 'Manager';
         $auth->add($manager);
 
-        $user = $auth->createRole('User');
-        $user->description = 'user';
+        $user = $auth->createRole('user');
+        $user->description = 'User';
         $auth->add($user);
 
         $banned = $auth->createRole('banned');
