@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use backend\models\User;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -44,13 +45,13 @@ class Task extends ActiveRecord
             [['title', 'status_id', 'user_id', 'manager_id', 'creator_id'], 'required'],
             [['text'], 'string'],
             [['files'], 'safe'],
-            [['status_id', 'user_id', 'manager_id', 'creator_id', 'createdAt', 'updatedAt', 'deletedAt'], 'default', 'value' => null],
+            [['deletedAt'], 'default', 'value' => null],
             [['status_id', 'user_id', 'manager_id', 'creator_id', 'createdAt', 'updatedAt', 'deletedAt'], 'integer'],
             [['title'], 'string', 'max' => 255],
-            [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => TaskStatus::className(), 'targetAttribute' => ['status_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['manager_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['manager_id' => 'id']],
-            [['creator_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['creator_id' => 'id']],
+            [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => TaskStatus::class, 'targetAttribute' => ['status_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['manager_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['manager_id' => 'id']],
+            [['creator_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['creator_id' => 'id']],
         ];
     }
 
@@ -81,7 +82,7 @@ class Task extends ActiveRecord
      */
     public function getStatus()
     {
-        return $this->hasOne(TaskStatus::className(), ['id' => 'status_id']);
+        return $this->hasOne(TaskStatus::class, ['id' => 'status_id']);
     }
 
     /**
@@ -91,7 +92,7 @@ class Task extends ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /**
@@ -101,7 +102,7 @@ class Task extends ActiveRecord
      */
     public function getManager()
     {
-        return $this->hasOne(User::className(), ['id' => 'manager_id']);
+        return $this->hasOne(User::class, ['id' => 'manager_id']);
     }
 
     /**
@@ -111,7 +112,7 @@ class Task extends ActiveRecord
      */
     public function getCreator()
     {
-        return $this->hasOne(User::className(), ['id' => 'creator_id']);
+        return $this->hasOne(User::class, ['id' => 'creator_id']);
     }
 
     /**
