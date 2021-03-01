@@ -2,12 +2,8 @@
 
 namespace backend\models;
 
-use app\models\Task;
-use app\models\TaskQuery;
-use app\models\UserQuery;
-use phpDocumentor\Reflection\Types\Parent_;
+use ReflectionClass;
 use Yii;
-use yii\db\ActiveRecord;
 use common\models\User as CommonUser;
 
 /**
@@ -106,7 +102,7 @@ class User extends CommonUser
     public static function getStatusList(): array
     {
         $statusList = [];
-        $parentUser = new \ReflectionClass(parent::class);
+        $parentUser = new ReflectionClass(parent::class);
         foreach ($parentUser->getConstants() as $constName => $constValue) {
             if (strpos($constName, "STATUS_") === 0) {
                 $statusList[$constValue] = strtolower(str_replace("STATUS_", '', $constName));
