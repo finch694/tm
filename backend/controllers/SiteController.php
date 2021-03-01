@@ -1,6 +1,7 @@
 <?php
 namespace backend\controllers;
 
+use backend\models\User;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -60,6 +61,8 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+//        var_dump((new User())->rules());
+//        exit();
         return $this->render('index');
     }
 
