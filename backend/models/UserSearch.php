@@ -19,7 +19,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'auth_key', 'password_hash', 'password_reset_token', 'email', 'verification_token', 'role'], 'safe'],
+            [['username', 'password_reset_token', 'email', 'role'], 'safe'],
         ];
     }
 
@@ -41,13 +41,17 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find();
+        $query = User::find()->join('LEFT JOIN', 'auth_assignment', '"user".id = cast( auth_assignment.user_id as integer)');
 //        var_dump($query);exit();
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
+        $dataProvider->sort->attributes['role']=[
+            'asc'=>['auth_assignment.item_name'=>SORT_ASC],
+            'desc'=>['auth_assignment.item_name'=>SORT_DESC],
+        ];
 
         $this->load($params);
 
@@ -70,6 +74,7 @@ class UserSearch extends User
             ->andFilterWhere(['ilike', 'password_hash', $this->password_hash])
             ->andFilterWhere(['ilike', 'password_reset_token', $this->password_reset_token])
             ->andFilterWhere(['ilike', 'email', $this->email])
+            ->andFilterWhere(['auth_assignment.item_name'=>$this->role])
             ->andFilterWhere(['ilike', 'verification_token', $this->verification_token]);
 
         return $dataProvider;
