@@ -5,6 +5,8 @@ namespace backend\models;
 use ReflectionClass;
 use Yii;
 use common\models\User as CommonUser;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "user".
@@ -26,6 +28,7 @@ use common\models\User as CommonUser;
  */
 class User extends CommonUser
 {
+    public $roleName;
 
     /**
      * {@inheritdoc}
@@ -33,12 +36,25 @@ class User extends CommonUser
     public function rules()
     {
         return array_merge(parent::rules(), [
-            [['username', 'email', 'created_at', 'updated_at'], 'required'],
+            [['username', 'email', 'updated_at'], 'required'],
             [['username', 'email'], 'string', 'max' => 255],
             [['email'], 'unique'],
+            [['created_at'], 'integer'],
             [['password_reset_token'], 'unique'],
             [['username'], 'unique'],
+            [['roleName'], 'safe']
         ]);
+    }
+
+    public function behaviors()
+    {
+        return array_merge(parent::behaviors(),[
+            ['class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'], // useless?
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ]]);
     }
 
     /**
@@ -52,9 +68,34 @@ class User extends CommonUser
             'password_reset_token' => 'Password Reset Token',
             'email' => 'Email',
             'status' => 'Status',
+            'roleName' => 'Role',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    /**
+     *
+     */
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->roleName = array_key_first(Yii::$app->authManager->getRolesByUser($this->id));
+    }
+
+    /**
+     * @param bool $insert
+     * @param array $changedAttributes
+     * @throws \Exception
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        $auth = Yii::$app->authManager;
+        $role = $auth->getRole($this->roleName);
+        $auth->revokeAll($this->id);
+        $auth->assign($role, $this->id);
+
+        parent::afterSave($insert, $changedAttributes);
     }
 
     /**
@@ -118,7 +159,7 @@ class User extends CommonUser
     {
         $statusList = self::getStatusList();
         if (array_key_exists($this->status, $statusList)) {
-            return strtolower($statusList[$this->status]);
+            return $statusList[$this->status];
         }
         return 'error';
     }

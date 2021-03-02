@@ -1,6 +1,8 @@
 <?php
 
 use backend\models\User;
+use kartik\date\DatePicker;
+use yii\grid\ActionColumn;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -24,14 +26,16 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'dateFormat' => 'yyy MM dd',
+            'datetimeFormat' => 'php: Y.m.d | H:i',
+        ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
             'username',
-//            'auth_key',
-//            'password_hash',
-            'password_reset_token',
             'email:email',
             [
                 'attribute' => 'status',
@@ -42,18 +46,43 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'attribute' => 'role',
+                'attribute' => 'roleName',
                 'label' => 'Role',
                 'filter' => User::getRoleList(),
                 'content' => function ($model) {
                     return $model->getRoleDescriptions();
                 }
             ],
-            'created_at',
-            'updated_at',
-//            'verification_token',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            ['attribute' => 'created_at',
+                'value' => 'created_at',
+                'format' => 'datetime',
+                'filter' => DatePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'created_at',
+                    'pluginOptions' => [
+                        'autoclose' => true,
+                        'format' => 'yyyy-MM-dd',
+                        'todayHighlight' => true
+                    ],
+                    'convertFormat' => true,
+                ]),
+            ],['attribute' => 'updated_at',
+                'value' => 'updated_at',
+                'format' => 'datetime',
+                'filter' => DatePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'updated_at',
+                    'pluginOptions' => [
+                        'autoclose' => true,
+                        'format' => 'yyyy-MM-dd',
+                        'todayHighlight' => true
+                    ],
+                    'convertFormat' => true,
+                ]),
+            ],
+            ['class' => ActionColumn::class,
+                'template' => (Yii::$app->user->can('admin'))? '{view} {update} {delete}': '{view}'
+            ],
         ],
     ]); ?>
 

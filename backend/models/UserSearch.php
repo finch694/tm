@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use DateTime;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -10,7 +11,6 @@ use yii\data\ActiveDataProvider;
  */
 class UserSearch extends User
 {
-    public $role;
 
     /**
      * {@inheritdoc}
@@ -18,8 +18,8 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'password_reset_token', 'email', 'role'], 'safe'],
+            [['id', 'status'], 'integer'],
+            [['username', 'password_reset_token', 'email', 'roleName', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -42,15 +42,14 @@ class UserSearch extends User
     public function search($params)
     {
         $query = User::find()->join('LEFT JOIN', 'auth_assignment', '"user".id = cast( auth_assignment.user_id as integer)');
-//        var_dump($query);exit();
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-        $dataProvider->sort->attributes['role']=[
-            'asc'=>['auth_assignment.item_name'=>SORT_ASC],
-            'desc'=>['auth_assignment.item_name'=>SORT_DESC],
+        $dataProvider->sort->attributes['roleName'] = [
+            'asc' => ['auth_assignment.item_name' => SORT_ASC],
+            'desc' => ['auth_assignment.item_name' => SORT_DESC],
         ];
 
         $this->load($params);
@@ -65,8 +64,6 @@ class UserSearch extends User
         $query->andFilterWhere([
             'id' => $this->id,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['ilike', 'username', $this->username])
@@ -74,9 +71,14 @@ class UserSearch extends User
             ->andFilterWhere(['ilike', 'password_hash', $this->password_hash])
             ->andFilterWhere(['ilike', 'password_reset_token', $this->password_reset_token])
             ->andFilterWhere(['ilike', 'email', $this->email])
-            ->andFilterWhere(['auth_assignment.item_name'=>$this->role])
+            ->andFilterWhere(['auth_assignment.item_name' => $this->roleName])
             ->andFilterWhere(['ilike', 'verification_token', $this->verification_token]);
+        if ($this->created_at) {
+            $date = new DateTime($this->created_at);
+            $start = $date->getTimestamp();
+            $query->andFilterWhere(['between', 'user.created_at', $start, $start + 86400]);
 
+        }
         return $dataProvider;
     }
 }

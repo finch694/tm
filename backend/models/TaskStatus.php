@@ -56,7 +56,7 @@ class TaskStatus extends ActiveRecord
      */
     public function getTasks()
     {
-        return $this->hasMany(Task::className(), ['status_id' => 'id']);
+        return $this->hasMany(Task::class, ['status_id' => 'id']);
     }
 
     /**
