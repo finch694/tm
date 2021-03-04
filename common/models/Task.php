@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use yii\db\ActiveRecord;
 
@@ -18,7 +18,9 @@ use yii\db\ActiveRecord;
  * @property int $createdAt
  * @property int $updatedAt
  * @property int|null $deletedAt
+ * @property int $priority_id
  *
+ * @property TaskPriority $priority
  * @property TaskStatus $status
  * @property User $user
  * @property User $manager
@@ -40,12 +42,13 @@ class Task extends ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'status_id', 'user_id', 'manager_id', 'creator_id'], 'required'],
+            [['title', 'status_id', 'user_id', 'manager_id', 'creator_id', 'priority_id'], 'required'],
             [['text'], 'string'],
             [['files'], 'safe'],
             [['deletedAt'], 'default', 'value' => null],
-            [['status_id', 'user_id', 'manager_id', 'creator_id', 'createdAt', 'updatedAt', 'deletedAt'], 'integer'],
+            [['status_id', 'user_id', 'manager_id', 'creator_id', 'createdAt', 'updatedAt', 'deletedAt', 'priority_id'], 'integer'],
             [['title'], 'string', 'max' => 255],
+            [['priority_id'], 'exist', 'skipOnError' => true, 'targetClass' => TaskPriority::class, 'targetAttribute' => ['priority_id' => 'id']],
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => TaskStatus::class, 'targetAttribute' => ['status_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
             [['manager_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['manager_id' => 'id']],
@@ -70,7 +73,18 @@ class Task extends ActiveRecord
             'createdAt' => 'Created At',
             'updatedAt' => 'Updated At',
             'deletedAt' => 'Deleted At',
+            'priority_id' => 'Priority ID',
         ];
+    }
+
+    /**
+     * Gets query for [[Priority]].
+     *
+     * @return \yii\db\ActiveQuery|TaskPriorityQuery
+     */
+    public function getPriority()
+    {
+        return $this->hasOne(TaskPriority::class, ['id' => 'priority_id']);
     }
 
     /**

@@ -13,6 +13,10 @@ $this->title = 'My Yii Application';
         <?php if (Yii::$app->user->can('manager')): ?>
             <p><a class="btn btn-lg btn-success" href="/user">Users</a></p>
         <?php endif; ?>
+        <?php if (Yii::$app->user->can('admin')): ?>
+            <p><a class="btn btn-lg btn-success" href="/task-status">Task's statuses</a></p>
+            <p><a class="btn btn-lg btn-success" href="/task-priority">Task's priority</a></p>
+        <?php endif; ?>
 
         <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
     </div>

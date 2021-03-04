@@ -1,15 +1,15 @@
 <?php
 
-namespace backend\models;
+namespace common\models;
 
 use yii\db\ActiveQuery;
 
 /**
- * This is the ActiveQuery class for [[TaskStatus]].
+ * This is the ActiveQuery class for [[TaskPriority]].
  *
- * @see TaskStatus
+ * @see TaskPriority
  */
-class TaskStatusQuery extends ActiveQuery
+class TaskPriorityQuery extends ActiveQuery
 {
     /*public function active()
     {
@@ -18,7 +18,7 @@ class TaskStatusQuery extends ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return TaskStatus[]|array
+     * @return TaskPriority[]|array
      */
     public function all($db = null)
     {
@@ -27,7 +27,7 @@ class TaskStatusQuery extends ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return TaskStatus|array|null
+     * @return TaskPriority|array|null
      */
     public function one($db = null)
     {

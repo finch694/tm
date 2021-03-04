@@ -66,7 +66,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     'convertFormat' => true,
                 ]),
-            ],['attribute' => 'updated_at',
+            ],
+            [
+                'attribute' => 'updated_at',
                 'value' => 'updated_at',
                 'format' => 'datetime',
                 'filter' => DatePicker::widget([
@@ -81,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]),
             ],
             ['class' => ActionColumn::class,
-                'template' => (Yii::$app->user->can('admin'))? '{view} {update} {delete}': '{view}'
+                'template' => (Yii::$app->user->can('admin')) ? '{view} {update} {delete}' : '{view}'
             ],
         ],
     ]); ?>
