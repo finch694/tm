@@ -45,8 +45,10 @@ class Task extends ActiveRecord
             [['title', 'status_id', 'user_id', 'manager_id', 'creator_id', 'priority_id'], 'required'],
             [['text'], 'string'],
             [['files'], 'safe'],
-            [['deletedAt'], 'default', 'value' => null],
             [['status_id', 'user_id', 'manager_id', 'creator_id', 'createdAt', 'updatedAt', 'deletedAt', 'priority_id'], 'integer'],
+            [['deletedAt'], 'default', 'value' => null],
+            [['createdAt'], 'default', 'value' => time()],
+            [['updatedAt'], 'default', 'value' => time()],
             [['title'], 'string', 'max' => 255],
             [['priority_id'], 'exist', 'skipOnError' => true, 'targetClass' => TaskPriority::class, 'targetAttribute' => ['priority_id' => 'id']],
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => TaskStatus::class, 'targetAttribute' => ['status_id' => 'id']],
@@ -104,7 +106,7 @@ class Task extends ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::class, ['id' => 'user_id']);
+        return $this->hasOne(User::class, ['id' => 'user_id'])->from(['u'=>User::tableName()]);
     }
 
     /**
@@ -114,7 +116,7 @@ class Task extends ActiveRecord
      */
     public function getManager()
     {
-        return $this->hasOne(User::class, ['id' => 'manager_id']);
+        return $this->hasOne(User::class, ['id' => 'manager_id'])->from(['um'=>User::tableName()]);
     }
 
     /**
@@ -124,7 +126,7 @@ class Task extends ActiveRecord
      */
     public function getCreator()
     {
-        return $this->hasOne(User::class, ['id' => 'creator_id']);
+        return $this->hasOne(User::class, ['id' => 'creator_id'])->from(['uc'=>User::tableName()]);
     }
 
     /**

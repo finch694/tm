@@ -53,7 +53,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->getRoleDescriptions();
                 }
             ],
-            ['attribute' => 'created_at',
+            [
+                'attribute' => 'created_at',
                 'value' => 'created_at',
                 'format' => 'datetime',
                 'filter' => DatePicker::widget([

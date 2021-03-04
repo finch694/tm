@@ -77,7 +77,11 @@ class UserSearch extends User
             $date = new DateTime($this->created_at);
             $start = $date->getTimestamp();
             $query->andFilterWhere(['between', 'user.created_at', $start, $start + 86400]);
-
+        }
+        if ($this->updated_at) {
+            $date = new DateTime($this->updated_at);
+            $start = $date->getTimestamp();
+            $query->andFilterWhere(['between', 'user.updated_at', $start, $start + 86400]);
         }
         return $dataProvider;
     }

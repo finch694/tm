@@ -12,6 +12,7 @@ $this->title = 'My Yii Application';
         <p class="lead">You have successfully created your Yii-powered application.</p>
         <?php if (Yii::$app->user->can('manager')): ?>
             <p><a class="btn btn-lg btn-success" href="/user">Users</a></p>
+            <p><a class="btn btn-lg btn-success" href="/task">Tasks</a></p>
         <?php endif; ?>
         <?php if (Yii::$app->user->can('admin')): ?>
             <p><a class="btn btn-lg btn-success" href="/task-status">Task's statuses</a></p>
