@@ -2,6 +2,8 @@
 
 namespace common\models;
 
+use backend\models\UserQuery;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
 /**
@@ -42,10 +44,10 @@ class Task extends ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'status_id', 'user_id', 'manager_id', 'creator_id', 'priority_id'], 'required'],
+            [['title', 'status_id', 'manager_id', 'creator_id', 'priority_id'], 'required'],
             [['text'], 'string'],
-            [['files'], 'safe'],
-            [['status_id', 'user_id', 'manager_id', 'creator_id', 'createdAt', 'updatedAt', 'deletedAt', 'priority_id'], 'integer'],
+            [['files', 'createdAt', 'updatedAt', 'deletedAt'], 'safe'],
+            [['status_id', 'user_id', 'manager_id', 'creator_id', 'priority_id'], 'integer'],
             [['deletedAt'], 'default', 'value' => null],
             [['createdAt'], 'default', 'value' => time()],
             [['updatedAt'], 'default', 'value' => time()],
@@ -79,6 +81,17 @@ class Task extends ActiveRecord
         ];
     }
 
+    public function behaviors()
+    {
+        return array_merge(parent::behaviors(),[
+            ['class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['createdAt', 'updatedAt'], // useless?
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updatedAt'],
+                ],
+            ]]);
+    }
+
     /**
      * Gets query for [[Priority]].
      *
@@ -106,7 +119,7 @@ class Task extends ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::class, ['id' => 'user_id'])->from(['u'=>User::tableName()]);
+        return $this->hasOne(User::class, ['id' => 'user_id'])->from(['u' => User::tableName()]);
     }
 
     /**
@@ -116,7 +129,7 @@ class Task extends ActiveRecord
      */
     public function getManager()
     {
-        return $this->hasOne(User::class, ['id' => 'manager_id'])->from(['um'=>User::tableName()]);
+        return $this->hasOne(User::class, ['id' => 'manager_id'])->from(['um' => User::tableName()]);
     }
 
     /**
@@ -126,7 +139,7 @@ class Task extends ActiveRecord
      */
     public function getCreator()
     {
-        return $this->hasOne(User::class, ['id' => 'creator_id'])->from(['uc'=>User::tableName()]);
+        return $this->hasOne(User::class, ['id' => 'creator_id'])->from(['uc' => User::tableName()]);
     }
 
     /**
@@ -137,4 +150,13 @@ class Task extends ActiveRecord
     {
         return new TaskQuery(get_called_class());
     }
+
+    public function beforeSave($insert)
+    {
+//        var_dump($this->text);exit();
+        return parent::beforeSave($insert);
+    }
 }
+/*
+ * Lorem Ipsum is simply dummy text of the https://www.lipsum.com/ printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.http://backend.test/task/index
+ */

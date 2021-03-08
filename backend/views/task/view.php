@@ -26,22 +26,37 @@ YiiAsset::register($this);
             ],
         ]) ?>
     </p>
-
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+//            'id',
             'title',
-            'text:ntext',
+            'text:html',
             'files',
-            'status_id',
-            'user_id',
-            'manager_id',
-            'creator_id',
-            'createdAt',
-            'updatedAt',
-            'deletedAt',
-            'priority_id',
+            [
+                    'label'=>'Priority',
+                'value'=>$model->priority->name,
+            ],
+            [
+                'label' => 'Status',
+                'value' => $model->status->text,
+                'contentOptions' => ['style' => 'background-color:' . $model->status->color]
+            ],
+            [
+                'label' => 'User',
+                'value' => $model->user ? $model->user->username : 'not set',
+            ],
+            [
+                'label' => 'Manager',
+                'value' => $model->manager ? $model->manager->username : 'not set',
+            ],
+            [
+                'label' => 'Creator',
+                'value' => $model->creator ? $model->creator->username : 'not set',
+            ],
+            'createdAt:datetime',
+            'updatedAt:datetime',
+            'deletedAt:datetime',
         ],
     ]) ?>
 

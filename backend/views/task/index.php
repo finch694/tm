@@ -20,11 +20,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Create Task', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('My tasks', ['my-index'], ['class' => 'btn btn-info']) ?>
+        <?= Html::a('All tasks', ['index'], ['class' => 'btn btn-info']) ?>
+        <?= Html::a('Unassigned tasks', ['unassigned-index'], ['class' => 'btn btn-info']) ?>
+        <?= Html::a('Tasks managed by me', ['managed-index'], ['class' => 'btn btn-info']) ?>
+        <?= Html::a('Tasks created by me', ['created-index'], ['class' => 'btn btn-info']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-    <?php //var_dump($dataProvider->models[0]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -62,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
             ],
             'title',
-            'text:ntext',
+            'text:raw',
             'files',
             [
                 'attribute' => 'userName',

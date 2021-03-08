@@ -2,6 +2,8 @@
 
 namespace backend\models;
 
+use common\models\Task;
+use common\models\TaskQuery;
 use ReflectionClass;
 use Yii;
 use common\models\User as CommonUser;

@@ -5,6 +5,7 @@ namespace common\models;
 use DateTime;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\db\Expression;
 
 /**
  * TaskSearch represents the model behind the search form of `common\models\Task`.
@@ -103,7 +104,7 @@ class TaskSearch extends Task
         $query->andFilterWhere([
             'task.id' => $this->id,
             'status_id' => $this->status_id,
-            'user_id' => $this->user_id,
+//            'user_id' => $this->user_id,
             'manager_id' => $this->manager_id,
             'creator_id' => $this->creator_id,
 //            'createdAt' => $this->createdAt,
@@ -129,6 +130,13 @@ class TaskSearch extends Task
             $date = new DateTime($this->updatedAt);
             $start = $date->getTimestamp();
             $query->andFilterWhere(['between', 'task.updatedAt', $start, $start + 86400]);
+        }
+        if (isset($this->user_id)) {
+            if ($this->user_id !== 0) {
+                $query->andFilterWhere(['user_id' => $this->user_id]);
+            } else {
+                $query->andFilterWhere(['is', 'user_id', new Expression('null')]);
+            }
         }
 
         return $dataProvider;

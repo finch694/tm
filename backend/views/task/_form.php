@@ -20,23 +20,24 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'text')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'files')->textInput() ?>
+    <?= $form->field($model, 'priority_id')->dropDownList($priorityList, ['prompt' => 'select priority'])
+        ->label('Priority') ?>
 
-    <?= $form->field($model, 'status_id')->dropDownList($statusList,['prompt'=>'select status']) ?>
+    <?= $form->field($model, 'status_id')->dropDownList($statusList, ['prompt' => 'select status'])
+    ->label('Status')?>
 
-    <?= $form->field($model, 'user_id')->dropDownList($userList, ['prompt' => 'select user']) ?>
+    <?= $form->field($model, 'files')->textInput() //todo upload ?>
 
-    <?= $form->field($model, 'manager_id')->dropDownList($userList, ['prompt' => 'select user']) ?>
+    <?= $form->field($model, 'user_id')->dropDownList($userList, ['prompt' => 'not set'])->label('Owner?') ?>
 
-    <?= $form->field($model, 'creator_id')->dropDownList($userList, ['prompt' => 'select user']) ?>
+    <?php if (Yii::$app->user->can('admin'))
+        echo $form->field($model, 'manager_id')->dropDownList($userList, ['prompt' => 'select user'])
+            ->label('Manager') ?>
 
-    <?= $form->field($model, 'createdAt')->textInput() ?>
-
-    <?= $form->field($model, 'updatedAt')->textInput() ?>
-
-    <?= $form->field($model, 'deletedAt')->textInput() ?>
-
-    <?= $form->field($model, 'priority_id')->dropDownList($priorityList, ['prompt' => 'select priority']) ?>
+    <?php if ($model->deletedAt !== null) echo $form->field($model, 'deletedAt')->textInput([
+        'readonly' => true,
+        'value' => Yii::$app->formatter->asDatetime($model->updatedAt, 'php:Y.m.d H:i:s'),
+    ]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

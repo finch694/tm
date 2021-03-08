@@ -25,7 +25,7 @@ class TaskPriorityController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['update','delete','index','view','change-active'],
+                        'actions' => ['update','create','delete','index','view','change-active'],
                         'allow' => true,
                         'roles' => ['admin'],
                     ],
