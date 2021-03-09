@@ -83,7 +83,7 @@ class Task extends ActiveRecord
 
     public function behaviors()
     {
-        return array_merge(parent::behaviors(),[
+        return array_merge(parent::behaviors(), [
             ['class' => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['createdAt', 'updatedAt'], // useless?
@@ -151,12 +151,38 @@ class Task extends ActiveRecord
         return new TaskQuery(get_called_class());
     }
 
+    /**
+     * @param bool $insert
+     * @return bool
+     */
     public function beforeSave($insert)
     {
-//        var_dump($this->text);exit();
+        $this->text = strip_tags($this->text);
+        $this->text = preg_replace("/(^|[\n ])([\w]*?)((ht|f)tp(s)?:\/\/[\w]+[^ ,\"\n\r\t<]*)/is",
+            "$1$2<a href=\"$3\" >$3</a>",
+            $this->text);
         return parent::beforeSave($insert);
     }
+
+    /**
+     * soft delete task
+     */
+    public function softDelete()
+    {
+        if (!$this->deletedAt) {
+            $this->deletedAt = time();
+            $this->save();
+        }
+    }
+
+    /**
+     *  recover task
+     */
+    public function recover()
+    {
+        if ($this->deletedAt) {
+            $this->deletedAt = null;
+            $this->save();
+        }
+    }
 }
-/*
- * Lorem Ipsum is simply dummy text of the https://www.lipsum.com/ printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.http://backend.test/task/index
- */

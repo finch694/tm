@@ -100,6 +100,14 @@ class User extends CommonUser
         parent::afterSave($insert, $changedAttributes);
     }
 
+    public function softDelete()
+    {
+        if ($this->status !== self::STATUS_DELETED){
+            $this->status=self::STATUS_DELETED;
+            return $this->save();
+        }
+    }
+
     /**
      * Gets query for [[Tasks]].
      *

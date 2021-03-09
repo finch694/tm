@@ -9,7 +9,7 @@ use yii\widgets\ActiveForm;
 /* @var array $userList */
 /* @var array $statusList */
 /* @var array $priorityList */
-
+$model->text = strip_tags($model->text);
 ?>
 
 <div class="task-form">
@@ -18,15 +18,15 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'text')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'text')->textarea(['rows' => '6']) ?>
 
     <?= $form->field($model, 'priority_id')->dropDownList($priorityList, ['prompt' => 'select priority'])
         ->label('Priority') ?>
 
     <?= $form->field($model, 'status_id')->dropDownList($statusList, ['prompt' => 'select status'])
-    ->label('Status')?>
+        ->label('Status') ?>
 
-    <?= $form->field($model, 'files')->textInput() //todo upload ?>
+    <?= $form->field($model, 'files')->textInput() //todo upload   ?>
 
     <?= $form->field($model, 'user_id')->dropDownList($userList, ['prompt' => 'not set'])->label('Owner?') ?>
 

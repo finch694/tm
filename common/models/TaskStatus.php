@@ -34,8 +34,8 @@ class TaskStatus extends ActiveRecord
             [['text'], 'required'],
             [['finally'], 'boolean'],
             [['text', 'color'], 'string', 'max' => 255],
+            [['deletedAt'], 'safe'],
             [['deletedAt'], 'default', 'value' => null],
-            [['deletedAt'], 'integer'],
         ];
     }
 

@@ -8,7 +8,6 @@ use common\models\User;
 use Yii;
 use common\models\Task;
 use common\models\TaskSearch;
-use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -39,44 +38,50 @@ class TaskController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new TaskSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        return $this->index($searchModel, $dataProvider);
+        $params['TaskSearch'] = ['deletedAt' => 0];
+        $title = 'All tasks';
+        return $this->index($params, $title);
     }
 
-    public function actionManagedIndex()
+    public function actionManagedTasks()
     {
-        $searchModel = new TaskSearch();
-        $params['TaskSearch'] = ['manager_id' => Yii::$app->user->id];
-        $dataProvider = $searchModel->search(array_merge_recursive(Yii::$app->request->queryParams, $params));
-        return $this->index($searchModel, $dataProvider);
+        $params['TaskSearch'] = ['manager_id' => Yii::$app->user->id, 'deletedAt' => 0];
+        $title = 'Controlled tasks by me';
+        return $this->index($params, $title);
     }
 
-    public function actionCreatedIndex()
+    public function actionCreatedTasks()
     {
-        $searchModel = new TaskSearch();
-        $params['TaskSearch'] = ['creator_id' => Yii::$app->user->id];
-        $dataProvider = $searchModel->search(array_merge_recursive(Yii::$app->request->queryParams, $params));
-        return $this->index($searchModel, $dataProvider);
+        $params['TaskSearch'] = ['creator_id' => Yii::$app->user->id, 'deletedAt' => 0];
+        $title = 'Tasks created by me';
+        return $this->index($params, $title);
     }
 
-    public function actionUnassignedIndex()
+    public function actionUnassignedTasks()
     {
-        $searchModel = new TaskSearch();
-        $params['TaskSearch'] = ['user_id' => 0];
-        $dataProvider = $searchModel->search(array_merge_recursive(Yii::$app->request->queryParams, $params));
-        return $this->index($searchModel, $dataProvider);
-    }
-    public function actionMyIndex()
-    {
-        $searchModel = new TaskSearch();
-        $params['TaskSearch'] = ['user_id' => Yii::$app->user->id];
-        $dataProvider = $searchModel->search(array_merge_recursive(Yii::$app->request->queryParams, $params));
-        return $this->index($searchModel, $dataProvider);
+        $params['TaskSearch'] = ['user_id' => 0, 'deletedAt' => 0];
+        $title = 'Unassigned tasks';
+        return $this->index($params, $title);
     }
 
-    public function index(TaskSearch $searchModel, ActiveDataProvider $dataProvider)
+    public function actionMyTasks()
     {
+        $params['TaskSearch'] = ['user_id' => Yii::$app->user->id, 'deletedAt' => 0];
+        $title = 'My tasks';
+        return $this->index($params, $title);
+    }
+
+    public function actionDeletedTasks()
+    {
+        $params['TaskSearch'] = ['deletedAt' => 1];
+        $title = 'Deleted tasks';
+        return $this->index($params, $title);
+    }
+
+    public function index($params, $title)
+    {
+        $searchModel = new TaskSearch();
+        $dataProvider = $searchModel->search(array_merge_recursive(Yii::$app->request->queryParams, $params));
         $statusList = TaskStatus::find()
             ->select(['text', 'id'])
             ->andWhere(['deletedAt' => null])
@@ -95,6 +100,7 @@ class TaskController extends Controller
             'dataProvider' => $dataProvider,
             'statusList' => $statusList,
             'priorityList' => $priorityList,
+            'title' => $title,
         ]);
     }
 
@@ -140,7 +146,7 @@ class TaskController extends Controller
      * @param string $view
      * @return string|\yii\web\Response
      */
-    public function taskCreateOrUpdate(Task $model, string $view)
+    public function taskCreateOrUpdate(Task $model, string $view, string $changeMod = '')
     {
         $userList = User::find()
             ->select(['username', 'id'])
@@ -164,15 +170,25 @@ class TaskController extends Controller
             ->column();
 
         if ($model->load(Yii::$app->request->post())) {
-            $model->creator_id = Yii::$app->user->getId();
-            if (!Yii::$app->user->can('admin')) {
-                $model->manager_id = $model->creator_id;
+            if ($view === "create") {
+                $model->creator_id = Yii::$app->user->getId();
+                if (!Yii::$app->user->can('admin')) {
+                    $model->manager_id = $model->creator_id;
+                }
             }
             if ($model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['index']);
             }
         }
-
+        if ($view === 'modal-change') {
+            return $this->renderAjax($view, [
+                'model' => $model,
+                'userList' => $userList,
+                'statusList' => $statusList,
+                'priorityList' => $priorityList,
+                'changeMod' => $changeMod
+            ]);
+        }
         return $this->render($view, [
             'model' => $model,
             'userList' => $userList,
@@ -192,9 +208,23 @@ class TaskController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $this->findModel($id)->softDelete();
 
         return $this->redirect(['index']);
+    }
+
+    public function actionRecover($id)
+    {
+        $this->findModel($id)->recover();
+        return $this->redirect(['index']);
+    }
+
+    public function actionModal($id, $mod)
+    {
+        $model = $this->findModel($id);
+
+        return $this->taskCreateOrUpdate($model, 'modal-change', $mod);
+
     }
 
     /**

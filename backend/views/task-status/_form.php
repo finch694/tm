@@ -21,7 +21,13 @@ use yii\widgets\ActiveForm;
         'options' => ['placeholder' => 'Select color ...'],
     ]); ?>
 
-    <?php if ($model->deletedAt) echo $form->field($model, 'deletedAt')->textInput(['maxlength' => true]) ?>
+    <?php if ($model->deletedAt) {
+        echo Html::label('Deleted at').'<br>';
+        echo Html::input('text', null, Yii::$app->formatter->asDatetime($model->deletedAt, 'php:d.m.Y H:i:s'), ['readonly' => true, 'class'=>'form-control']);
+//    $form->field($model, 'deletedAt')->textInput(['maxlength' => true,
+//        'readonly'=> true,
+//        'value' => Yii::$app->formatter->asDatetime($model->deletedAt, 'php:d.m.Y H:i:s'),])
+    } ?>
 
     <?= $form->field($model, 'finally')->checkbox() ?>
 

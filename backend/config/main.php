@@ -43,6 +43,13 @@ return [
             'rules' => [
             ],
         ],
+        'view' => [
+            'theme' => [
+                'pathMap' => [
+                    '@app/views' => '@vendor/dmstr/yii2-adminlte-asset/example-views/testing/app'
+                ],
+            ],
+        ],
     ],
     'params' => $params,
 ];

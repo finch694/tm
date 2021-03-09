@@ -35,7 +35,7 @@ class TaskSearch extends Task
 
     public function attributes()
     {
-        return array_merge( parent::attributes(),['managerName'=>'Manager', 'creatorName'=>'Creator']);
+        return array_merge(parent::attributes(), ['managerName' => 'Manager', 'creatorName' => 'Creator']);
     }
 
     /**
@@ -121,6 +121,13 @@ class TaskSearch extends Task
             ->andFilterWhere(['task_status.id' => $this->taskStatus])
             ->andFilterWhere(['task_priority.id' => $this->taskPriority])
             ->andFilterWhere(['ilike', 'files', $this->files]);
+        if (isset($this->deletedAt)) {
+            if ($this->deletedAt) {
+                $query->andFilterWhere(['is not', 'task.deletedAt', new Expression('null')]);
+            } else {
+                $query->andFilterWhere(['is', 'task.deletedAt', new Expression('null')]);
+            }
+        }
         if ($this->createdAt) {
             $date = new DateTime($this->createdAt);
             $start = $date->getTimestamp();
