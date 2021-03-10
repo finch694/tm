@@ -12,22 +12,10 @@ use yii\widgets\Pjax;
 /* @var array $priorityList */
 /* @var string $title */
 
-$this->title = 'Tasks';
+$this->title = $title;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
     <div class="task-index">
-
-        <h1><?= Html::encode($title) ?></h1>
-
-        <p>
-            <?= Html::a('Create Task', ['create'], ['class' => 'btn btn-success']) ?>
-            <?= Html::a('My tasks', ['task/my-tasks'], ['class' => 'btn btn-info']) ?>
-            <?= Html::a('All tasks', ['index'], ['class' => 'btn btn-info']) ?>
-            <?= Html::a('Unassigned tasks', ['task/unassigned-tasks'], ['class' => 'btn btn-info']) ?>
-            <?= Html::a('Controlled tasks by me', ['task/managed-tasks'], ['class' => 'btn btn-info']) ?>
-            <?= Html::a('Tasks created by me', ['task/created-tasks'], ['class' => 'btn btn-info']) ?>
-            <?= Html::a('Deleted tasks', ['task/deleted-tasks'], ['class' => 'btn btn-danger']) ?>
-        </p>
 
         <?php Pjax::begin(); ?>
         <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

@@ -1,5 +1,6 @@
 <?php
 return [
+    'name'=>'Task app',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',

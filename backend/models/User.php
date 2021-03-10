@@ -195,4 +195,15 @@ class User extends CommonUser
         }
         return $roleList;
     }
+
+    /**
+     * @param $id
+     * @return string
+     */
+    public static function getNameById($id)
+    {
+        if ($user= self::findIdentity($id)){
+            return $user->username;
+        }
+    }
 }

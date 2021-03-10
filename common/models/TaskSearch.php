@@ -88,9 +88,10 @@ class TaskSearch extends Task
             'desc' => ['task_status.text' => SORT_DESC],
         ];
         $dataProvider->sort->attributes['taskPriority'] = [
-            'asc' => ['task_priority.name' => SORT_ASC],
-            'desc' => ['task_priority.name' => SORT_DESC],
+            'asc' => ['task_priority.value' => SORT_ASC],
+            'desc' => ['task_priority.value' => SORT_DESC],
         ];
+        $dataProvider->sort->defaultOrder = ['taskPriority'=> SORT_ASC];
 
         $this->load($params);
 
