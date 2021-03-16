@@ -1,11 +1,11 @@
 <?php
 
-use yii\helpers\Html;
-
 /* @var $this yii\web\View */
 /* @var $model common\models\Task */
 /* @var array $userList */
+/* @var array $managerList */
 /* @var array $statusList */
+/* @var array $statusColor */
 /* @var array $priorityList */
 
 
@@ -22,6 +22,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'userList' => $userList,
         'statusList'=>$statusList,
         'priorityList'=>$priorityList,
+        'managerList'=>$managerList,
+        'statusColor'=>$statusColor,
     ]) ?>
 
 </div>

@@ -13,5 +13,8 @@ return [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
+        'storage'=>[
+            'class'=>'common\components\storage\Storage'
+        ]
     ],
 ];

@@ -3,6 +3,7 @@
 namespace common\models;
 
 use backend\models\UserQuery;
+use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
@@ -12,7 +13,7 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property string $title
  * @property string|null $text
- * @property string|null $files
+ * @property $files
  * @property int $status_id
  * @property int $user_id
  * @property int $manager_id
@@ -30,6 +31,8 @@ use yii\db\ActiveRecord;
  */
 class Task extends ActiveRecord
 {
+    public $files;
+
     /**
      * {@inheritdoc}
      */
@@ -46,12 +49,13 @@ class Task extends ActiveRecord
         return [
             [['title', 'status_id', 'manager_id', 'creator_id', 'priority_id'], 'required'],
             [['text'], 'string'],
-            [['files', 'createdAt', 'updatedAt', 'deletedAt'], 'safe'],
+            [['createdAt', 'updatedAt', 'deletedAt'], 'safe'],
             [['status_id', 'user_id', 'manager_id', 'creator_id', 'priority_id'], 'integer'],
             [['deletedAt'], 'default', 'value' => null],
             [['createdAt'], 'default', 'value' => time()],
             [['updatedAt'], 'default', 'value' => time()],
             [['title'], 'string', 'max' => 255],
+            [['files'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxFiles' => 0],
             [['priority_id'], 'exist', 'skipOnError' => true, 'targetClass' => TaskPriority::class, 'targetAttribute' => ['priority_id' => 'id']],
             [['status_id'], 'exist', 'skipOnError' => true, 'targetClass' => TaskStatus::class, 'targetAttribute' => ['status_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
@@ -142,6 +146,11 @@ class Task extends ActiveRecord
         return $this->hasOne(User::class, ['id' => 'creator_id'])->from(['uc' => User::tableName()]);
     }
 
+    public function getAttachmentFiles()
+    {
+        return $this->hasMany(AttachmentFiles::class,['task_id'=>'id']);
+    }
+
     /**
      * {@inheritdoc}
      * @return TaskQuery the active query used by this AR class.
@@ -155,14 +164,14 @@ class Task extends ActiveRecord
      * @param bool $insert
      * @return bool
      */
-    public function beforeSave($insert)
-    {
-        $this->text = strip_tags($this->text);
-        $this->text = preg_replace("/(^|[\n ])([\w]*?)((ht|f)tp(s)?:\/\/[\w]+[^ ,\"\n\r\t<]*)/is",
-            "$1$2<a href=\"$3\" >$3</a>",
-            $this->text);
-        return parent::beforeSave($insert);
-    }
+//    public function beforeSave($insert)
+//    {
+//        $this->text = strip_tags($this->text);
+//        $this->text = preg_replace("/(^|[\n ])([\w]*?)((ht|f)tp(s)?:\/\/[\w]+[^ ,\"\n\r\t<]*)/is",
+//            "$1$2<a href=\"$3\" >$3</a>",
+//            $this->text);
+//        return parent::beforeSave($insert);
+//    }
 
     /**
      * soft delete task
@@ -184,5 +193,37 @@ class Task extends ActiveRecord
             $this->deletedAt = null;
             $this->save();
         }
+    }
+
+    public function upload()
+    {
+//        $this->save(false, ['id']);
+
+//        var_dump($this->id); exit();
+        if ($this->tfiles) {
+            $names = json_decode($this->files);
+            if ($this->validate()) {
+//            $path = Yii::$app->params['storagePath'];
+                foreach ($this->tfiles as $file) {
+//                $name = sha1_file($file->tempName) . time() . '.' . $file->extension;
+                    $names[] = Yii::$app->storage->getFile(Yii::$app->storage->saveUploadedFile($file));
+//                $file->saveAs($path . $name);
+//                $names[] = $name;
+                }
+            }
+            $this->files = json_encode($names);
+//        var_dump(json_encode($names));exit;
+//        $this->save(false, ['files']);
+
+            $this->tfiles = null;
+//        return $this->save();
+        }
+        return true;
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
     }
 }

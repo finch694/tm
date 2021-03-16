@@ -7,8 +7,10 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 /* @var array $userList */
 /* @var array $statusList */
+/* @var array $statusColor */
 /* @var array $priorityList */
 /* @var string $changeMod */
+$statusColor = array_map(function ($val){ return  ["style"=>"background-color:".$val];},$statusColor);
 ?>
 
 <div class="change-form">
@@ -17,7 +19,7 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin([
         'id' => 'change-modal',
         'method' => 'post',
-        'action' => ['modal?id=' . $model->id.'&mod='.$changeMod]
+        'action' => ['modal?id=' . $model->id . '&mod=' . $changeMod]
     ]); ?>
     <div class="form-group">
 
@@ -26,7 +28,7 @@ use yii\widgets\ActiveForm;
             case 'user':
                 echo $form->field($model, 'user_id')
                     ->dropDownList($userList, ['prompt' => 'not set'])
-                    ->label('Owner?');
+                    ->label('Executor');
                 break;
             case 'priority':
                 echo $form->field($model, 'priority_id')
@@ -34,7 +36,8 @@ use yii\widgets\ActiveForm;
                     ->label('Priority');
                 break;
             case 'status':
-                echo $form->field($model, 'status_id')->dropDownList($statusList, ['prompt' => 'select status'])
+                echo $form->field($model, 'status_id')->dropDownList($statusList, ['prompt' => 'select status',
+                    'options' => $statusColor])
                     ->label('Status');
                 break;
             default:

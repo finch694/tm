@@ -15,7 +15,6 @@ YiiAsset::register($this);
 <div class="task-view">
 
 
-
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -31,11 +30,17 @@ YiiAsset::register($this);
         'attributes' => [
 //            'id',
             'title',
-            'text:html',
+//            'text:html',
+            [
+                'label' => 'Text',
+                'format' => 'html',
+                'value' => preg_replace("/(^|[\n ])([\w]*?)((ht|f)tp(s)?:\/\/[\w]+[^ ,\"\n\r\t<]*)/is",
+                    "$1$2<a href=\"$3\" >$3</a>", $model->text),
+            ],
             'files',
             [
-                    'label'=>'Priority',
-                'value'=>$model->priority->name,
+                'label' => 'Priority',
+                'value' => $model->priority->name,
             ],
             [
                 'label' => 'Status',

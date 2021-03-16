@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use common\models\AttachmentFiles;
 use common\models\TaskPriority;
 use common\models\TaskStatus;
 use common\models\User;
@@ -11,6 +12,7 @@ use common\models\TaskSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * TaskController implements the CRUD actions for Task model.
@@ -38,6 +40,7 @@ class TaskController extends Controller
      */
     public function actionIndex()
     {
+//        var_dump( Yii::$app->basePath);exit();
         $params['TaskSearch'] = ['deletedAt' => 0];
         $title = 'All tasks';
         return $this->index($params, $title);
@@ -156,6 +159,15 @@ class TaskController extends Controller
             ->indexBy('id')
             ->asArray()
             ->column();
+        $managerList = User::find()
+            ->select(['username', 'id'])
+            ->leftJoin('auth_assignment', '"user".id = cast( auth_assignment.user_id as integer)')
+            ->andWhere(['status' => User::STATUS_ACTIVE])
+            ->andWhere(['!=', "item_name", "banned"])
+            ->andWhere(['!=', "item_name", "user"])
+            ->indexBy('id')
+            ->asArray()
+            ->column();
         $statusList = TaskStatus::find()
             ->select(['text', 'id'])
             ->andWhere(['deletedAt' => null])
@@ -168,7 +180,12 @@ class TaskController extends Controller
             ->indexBy('id')
             ->asArray()
             ->column();
-
+        $statusColor = TaskStatus::find()
+            ->select(['color','id'])
+            ->andWhere(['deletedAt'=> null])
+            ->indexBy('id')
+            ->asArray()
+            ->column();
         if ($model->load(Yii::$app->request->post())) {
             if ($view === "create") {
                 $model->creator_id = Yii::$app->user->getId();
@@ -177,6 +194,12 @@ class TaskController extends Controller
                 }
             }
             if ($model->save()) {
+                if ($toDelete =  Yii::$app->request->post("toDelete")) { //todo remake
+                    $this->deleteFiles($toDelete);
+                }
+                if ($files = UploadedFile::getInstances($model, 'files')) {
+                    $this->saveFiles($files, $model->id);
+                }
                 return $this->redirect(['index']);
             }
         }
@@ -186,6 +209,7 @@ class TaskController extends Controller
                 'userList' => $userList,
                 'statusList' => $statusList,
                 'priorityList' => $priorityList,
+                'statusColor'=>$statusColor,
                 'changeMod' => $changeMod
             ]);
         }
@@ -194,7 +218,8 @@ class TaskController extends Controller
             'userList' => $userList,
             'statusList' => $statusList,
             'priorityList' => $priorityList,
-
+            'managerList'=>$managerList,
+            'statusColor'=>$statusColor,
         ]);
 
     }
@@ -241,5 +266,28 @@ class TaskController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    private function deleteFiles(string $idsToDelete)
+    {
+        $ids = explode(',', $idsToDelete);
+        foreach ($ids as $idFile) {
+            if ($modelFile = AttachmentFiles::find()->where(['id' => $idFile])->one()) {
+                $modelFile->delete();
+                Yii::$app->storage->deleteFile($modelFile->name);
+            }
+        }
+        return true;
+    }
+
+    private function saveFiles(array $files, $taskId)
+    {
+        foreach ($files as $file) {
+            $modelFile = new AttachmentFiles();
+            $modelFile->task_id = $taskId;
+            $modelFile->native_name = $file->name;
+            $modelFile->name = Yii::$app->storage->saveUploadedFile($file);
+            $modelFile->save();
+        }
     }
 }

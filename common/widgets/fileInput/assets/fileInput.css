@@ -1,0 +1,24 @@
+.preview-image, .attachment-image {
+    height: 100px;
+    width: 100px;
+    border: 1px solid #000;
+    margin: 10px 5px 0 0;
+    float: left;
+}
+#new-files {
+    clear: left;
+}
+
+#uploadbtn {
+    clear: left;
+    padding-top: 1em;
+}
+
+.drop-button, .delete-button {
+    float: right;
+    margin-right: 2px;
+}
+
+/*.delete-button {*/
+/*    float: right;*/
+/*}*/

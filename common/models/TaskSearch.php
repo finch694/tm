@@ -62,7 +62,8 @@ class TaskSearch extends Task
             ->joinWith('status')
             ->joinWith('priority')
             ->joinWith('creator')
-            ->joinWith('manager');
+            ->joinWith('manager')
+            ->joinWith('attachmentFiles');
 
         // add conditions that should always apply here
 
@@ -91,7 +92,7 @@ class TaskSearch extends Task
             'asc' => ['task_priority.value' => SORT_ASC],
             'desc' => ['task_priority.value' => SORT_DESC],
         ];
-        $dataProvider->sort->defaultOrder = ['taskPriority'=> SORT_ASC];
+        $dataProvider->sort->defaultOrder = ['taskPriority' => SORT_ASC];
 
         $this->load($params);
 
@@ -120,8 +121,7 @@ class TaskSearch extends Task
             ->andFilterWhere(['ilike', 'uc.username', $this->creatorName])
             ->andFilterWhere(['ilike', 'um.username', $this->managerName])
             ->andFilterWhere(['task_status.id' => $this->taskStatus])
-            ->andFilterWhere(['task_priority.id' => $this->taskPriority])
-            ->andFilterWhere(['ilike', 'files', $this->files]);
+            ->andFilterWhere(['task_priority.id' => $this->taskPriority]);
         if (isset($this->deletedAt)) {
             if ($this->deletedAt) {
                 $query->andFilterWhere(['is not', 'task.deletedAt', new Expression('null')]);

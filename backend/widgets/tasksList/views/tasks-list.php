@@ -1,11 +1,17 @@
 <?php
-/* @var $taskList array */
+
+/**
+ * @var $taskList array
+ */
+
 $count = count($taskList);
 ?>
 <li class="dropdown tasks-menu">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
         <i class="fa fa-flag-o"></i>
-        <span class="label label-danger"><?= $count ?></span>
+        <?php if ($count) : ?>
+            <span class="label label-danger"><?= $count ?></span>
+        <?php endif; ?>
     </a>
     <ul class="dropdown-menu">
         <li class="header">You have <?= $count ?> open <?= ($count > 1) ? 'tasks' : 'task' ?></li>
@@ -24,7 +30,6 @@ $count = count($taskList);
                         </a>
                     </li>
                 <?php endforeach; ?>
-
             </ul>
         </li>
         <li class="footer">

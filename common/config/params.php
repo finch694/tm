@@ -6,4 +6,7 @@ return [
     'senderName' => 'Example.com mailer',
     'user.passwordResetTokenExpire' => 3600,
     'user.passwordMinLength' => 3,
+    'maxFileSize' => 1024 * 1024 * 2, // 2 megabytes
+    'storagePath' => '@backend/web/uploads/',
+    'storageUri' => '/uploads/',
 ];
