@@ -29,12 +29,12 @@ class UserController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['index','view'],
+                        'actions' => ['index', 'view'],
                         'allow' => true,
                         'roles' => ['manager'],
                     ],
                     [
-                        'actions' => ['update','delete'],
+                        'actions' => ['update', 'delete'],
                         'allow' => true,
                         'roles' => ['admin'],
                     ],
@@ -96,6 +96,7 @@ class UserController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $this->log('update', $model->username, $id);
             return $this->redirect(['index']);
         }
 
@@ -113,8 +114,9 @@ class UserController extends Controller
      */
     public function actionDelete($id)
     {
-         $this->findModel($id)->softDelete();
-
+        $model = $this->findModel($id);
+        $model->softDelete();
+        $this->log('delete', $model->username, $id);
         return $this->redirect(['index']);
     }
 
@@ -132,5 +134,10 @@ class UserController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    private function log(string $action, string $name, int $modelId)
+    {
+        Yii::info($action . ' user "' . $name . '"(id-' . $modelId . ')', 'log');
     }
 }

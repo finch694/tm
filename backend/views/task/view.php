@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\YiiAsset;
 use yii\widgets\DetailView;
 
@@ -37,7 +38,30 @@ YiiAsset::register($this);
                 'value' => preg_replace("/(^|[\n ])([\w]*?)((ht|f)tp(s)?:\/\/[\w]+[^ ,\"\n\r\t<]*)/is",
                     "$1$2<a href=\"$3\" >$3</a>", $model->text),
             ],
-            'files',
+//            'files',
+            [
+                'label' => 'Files',
+                'format' => 'raw',
+                'value' => function ($model) {
+                    $content = '';
+                    foreach ($model->attachmentFiles as $file) {
+                        $content .=
+                            Html::tag('div',
+                                Html::a(
+                                    Html::tag('i', '', ['class' => 'glyphicon glyphicon-save']),
+                                    "/task/download?id=" . $file->id, ['data-pjax' => 0]),
+                                ['style' => 'background:url(' .
+                                    Url::base(true) . Yii::$app->storage->getFile($file->name) . ');
+                                    background-size: cover;
+                                    height: 50px;
+                                    width: 50px;
+                                    float: left;
+                                    margin: 1px',
+                                ]);
+                    }
+                    return $content;
+                }
+            ],
             [
                 'label' => 'Priority',
                 'value' => $model->priority->name,

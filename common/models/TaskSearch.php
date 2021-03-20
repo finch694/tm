@@ -22,6 +22,8 @@ class TaskSearch extends Task
 
     public $taskPriority;
 
+    public $statusFinally;
+
     /**
      * {@inheritdoc}
      */
@@ -30,6 +32,7 @@ class TaskSearch extends Task
         return [
             [['id', 'status_id', 'user_id', 'manager_id', 'creator_id', 'deletedAt', 'priority_id'], 'integer'],
             [['title', 'text', 'files', 'userName', 'managerName', 'creatorName', 'taskStatus', 'taskPriority', 'createdAt', 'updatedAt'], 'safe'],
+            [['statusFinally'], 'boolean'],
         ];
     }
 
@@ -121,7 +124,8 @@ class TaskSearch extends Task
             ->andFilterWhere(['ilike', 'uc.username', $this->creatorName])
             ->andFilterWhere(['ilike', 'um.username', $this->managerName])
             ->andFilterWhere(['task_status.id' => $this->taskStatus])
-            ->andFilterWhere(['task_priority.id' => $this->taskPriority]);
+            ->andFilterWhere(['task_priority.id' => $this->taskPriority])
+            ->andFilterWhere(['task_status.finally' => $this->statusFinally]);
         if (isset($this->deletedAt)) {
             if ($this->deletedAt) {
                 $query->andFilterWhere(['is not', 'task.deletedAt', new Expression('null')]);
@@ -146,7 +150,6 @@ class TaskSearch extends Task
                 $query->andFilterWhere(['is', 'user_id', new Expression('null')]);
             }
         }
-
         return $dataProvider;
     }
 }

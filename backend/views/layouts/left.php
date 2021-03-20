@@ -43,12 +43,19 @@ if (isset($user)) {
                     [
                         'label' => 'Tasks', 'icon' => 'list-ol', 'url' => '/task',
                         'items' => [
-                            ['label' => 'Your tasks', 'icon' => 'link', 'url' => ['/task/my-tasks']],
+                            [
+                                'label' => 'Your tasks', 'icon' => 'link', 'url' => ['/task/my-tasks'],
+                                'items' => [
+                                    ['label' => 'Active tasks', 'icon' => 'square-o', 'url' => ['/task/my-active-tasks']],
+                                    ['label' => 'Closed tasks', 'icon' => 'check-square-o', 'url' => ['/task/my-closed-tasks']],
+                                    ['label' => 'All your tasks', 'icon' => 'clone', 'url' => ['/task/my-tasks']],
+                                ]
+                            ],
                             ['label' => 'All tasks', 'icon' => 'list-ol', 'url' => ['/task']],
                             ['label' => 'Unassigned tasks', 'icon' => 'unlink', 'url' => ['/task/unassigned-tasks']],
                             ['label' => 'Your managed tasks', 'icon' => 'search', 'url' => ['/task/managed-tasks']],
                             ['label' => 'Your created tasks', 'icon' => 'pencil', 'url' => ['/task/created-tasks']],
-                            ['label' => 'Deleted tasks', 'icon' => 'trash', 'url' => ['/task/deleted-tasks'],'visible' => Yii::$app->user->can('admin')],
+                            ['label' => 'Deleted tasks', 'icon' => 'trash', 'url' => ['/task/deleted-tasks'], 'visible' => Yii::$app->user->can('admin')],
                         ]
                     ],
                     ['label' => 'Menu', 'options' => ['class' => 'header']],
@@ -62,6 +69,7 @@ if (isset($user)) {
                             ['label' => 'Priority', 'icon' => 'exclamation', 'url' => ['/task-priority']]
                         ]
                     ],
+                    ['label' => 'Log', 'icon' => 'history', 'url' => ['/log'], 'visible' => Yii::$app->user->can('admin')],
                     ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
                     [
                         'label' => 'Some tools',

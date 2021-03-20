@@ -25,7 +25,7 @@ class TaskPriorityController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['update','create','delete','index','view','change-active'],
+                        'actions' => ['update', 'create', 'delete', 'index', 'view', 'change-active'],
                         'allow' => true,
                         'roles' => ['admin'],
                     ],
@@ -83,6 +83,7 @@ class TaskPriorityController extends Controller
         $model = new TaskPriority();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $this->log('create', $model->name, $model->id);
             return $this->redirect(['index']);
         }
 
@@ -103,6 +104,7 @@ class TaskPriorityController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $this->log('update', $model->name, $model->id);
             return $this->redirect(['index']);
         }
 
@@ -127,7 +129,13 @@ class TaskPriorityController extends Controller
 
     public function actionChangeActive($id)
     {
-        $this->findModel($id)->changeActive();
+        $model = $this->findModel($id);
+        $model->changeActive();
+        if ($model->active) {
+            $this->log('activate', $model->name, $id);
+        } else {
+            $this->log('deactivate', $model->name, $id);
+        }
         return $this->redirect(['index']);
     }
 
@@ -145,5 +153,10 @@ class TaskPriorityController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    private function log(string $action, string $title, int $modelId)
+    {
+        Yii::info($action . ' priority "' . $title . '"(id-' . $modelId . ')', 'log');
     }
 }

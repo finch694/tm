@@ -9,6 +9,7 @@ use common\models\User;
 use Yii;
 use common\models\Task;
 use common\models\TaskSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -25,6 +26,29 @@ class TaskController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => [
+                            'index', 'managed-tasks', 'created-tasks', 'unassigned-tasks', 'my-tasks', 'download',
+                            'my-active-tasks', 'my-closed-tasks', 'view', 'create', 'update', 'delete', 'modal'
+                        ],
+                        'allow' => true,
+                        'roles' => ['manager'],
+                    ],
+                    [
+                        'actions' => ['deleted-tasks', 'recover'],
+                        'allow' => true,
+                        'roles' => ['admin'],
+                    ],
+                    [
+                        'actions' => ['logout'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -40,7 +64,6 @@ class TaskController extends Controller
      */
     public function actionIndex()
     {
-//        var_dump( Yii::$app->basePath);exit();
         $params['TaskSearch'] = ['deletedAt' => 0];
         $title = 'All tasks';
         return $this->index($params, $title);
@@ -71,6 +94,20 @@ class TaskController extends Controller
     {
         $params['TaskSearch'] = ['user_id' => Yii::$app->user->id, 'deletedAt' => 0];
         $title = 'My tasks';
+        return $this->index($params, $title);
+    }
+
+    public function actionMyActiveTasks()
+    {
+        $params['TaskSearch'] = ['user_id' => Yii::$app->user->id, 'deletedAt' => 0, 'statusFinally' => false];
+        $title = 'My active tasks';
+        return $this->index($params, $title);
+    }
+
+    public function actionMyClosedTasks()
+    {
+        $params['TaskSearch'] = ['user_id' => Yii::$app->user->id, 'deletedAt' => 0, 'statusFinally' => true];
+        $title = 'My closed tasks';
         return $this->index($params, $title);
     }
 
@@ -181,8 +218,8 @@ class TaskController extends Controller
             ->asArray()
             ->column();
         $statusColor = TaskStatus::find()
-            ->select(['color','id'])
-            ->andWhere(['deletedAt'=> null])
+            ->select(['color', 'id'])
+            ->andWhere(['deletedAt' => null])
             ->indexBy('id')
             ->asArray()
             ->column();
@@ -194,13 +231,18 @@ class TaskController extends Controller
                 }
             }
             if ($model->save()) {
-                if ($toDelete =  Yii::$app->request->post("toDelete")) { //todo remake
+                if ($toDelete = Yii::$app->request->post("toDelete")) { //todo remake
                     $this->deleteFiles($toDelete);
                 }
                 if ($files = UploadedFile::getInstances($model, 'files')) {
                     $this->saveFiles($files, $model->id);
                 }
-                return $this->redirect(['index']);
+                $this->log($view, $model->title, $model->id);
+                if ($view === 'modal-change') {
+                    return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
+                } else {
+                    return $this->redirect(['task/index']);
+                }
             }
         }
         if ($view === 'modal-change') {
@@ -209,7 +251,7 @@ class TaskController extends Controller
                 'userList' => $userList,
                 'statusList' => $statusList,
                 'priorityList' => $priorityList,
-                'statusColor'=>$statusColor,
+                'statusColor' => $statusColor,
                 'changeMod' => $changeMod
             ]);
         }
@@ -218,8 +260,8 @@ class TaskController extends Controller
             'userList' => $userList,
             'statusList' => $statusList,
             'priorityList' => $priorityList,
-            'managerList'=>$managerList,
-            'statusColor'=>$statusColor,
+            'managerList' => $managerList,
+            'statusColor' => $statusColor,
         ]);
 
     }
@@ -233,15 +275,20 @@ class TaskController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->softDelete();
-
-        return $this->redirect(['index']);
+        if ($model = $this->findModel($id)) {
+            $model->softDelete();
+            $this->log('delete', $model->title, $id);
+        }
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     public function actionRecover($id)
     {
-        $this->findModel($id)->recover();
-        return $this->redirect(['index']);
+        if ($model = $this->findModel($id)) {
+            $model->recover();
+            $this->log('recover', $model->title, $id);
+        }
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     public function actionModal($id, $mod)
@@ -264,7 +311,6 @@ class TaskController extends Controller
         if (($model = Task::findOne($id)) !== null) {
             return $model;
         }
-
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
@@ -288,6 +334,20 @@ class TaskController extends Controller
             $modelFile->native_name = $file->name;
             $modelFile->name = Yii::$app->storage->saveUploadedFile($file);
             $modelFile->save();
+        }
+    }
+
+    private function log(string $action, string $title, int $modelId)
+    {
+        Yii::info($action . ' task "' . $title . '"(id-' . $modelId . ')', 'log');
+    }
+
+    public function actionDownload($id)
+    {
+        $file = AttachmentFiles::findOne($id);
+        $path =  Yii::$app->storage->getPath($file->name);
+        if (file_exists($path)) {
+            return Yii::$app->response->sendFile($path, $file->native_name)->send();
         }
     }
 }

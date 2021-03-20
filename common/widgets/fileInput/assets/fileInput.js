@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(function () {
 //todo refactor
     var maxFiles = 6;
 
@@ -132,9 +132,8 @@ $(document).ready(function () {
         $('#img-' + temp[1]).fadeTo(500, 0.2);
         var idToDelete = [];
         idToDelete.push(temp[1]);
-        var old=[];
-        if ( old = $('#files-to-delete').val())
-        {
+        var old = [];
+        if (old = $('#files-to-delete').val()) {
             idToDelete.push(old);
         }
         $('#files-to-delete').val(Array.from(idToDelete));

@@ -74,6 +74,11 @@ class Storage extends Component implements StorageInterface
 
     public function deleteFile(string $filename)
     {
-        return unlink($this->getStoragePath().$filename);
+        return unlink($this->getStoragePath() . $filename);
+    }
+
+    public function getPath(string $filename)
+    {
+        return $this->getStoragePath().$filename;
     }
 }

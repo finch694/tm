@@ -4,6 +4,7 @@ use backend\assets\ModalAsset;
 use kartik\date\DatePicker;
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
@@ -16,6 +17,20 @@ use yii\widgets\Pjax;
 ModalAsset::register($this);
 $this->title = $title;
 $this->params['breadcrumbs'][] = $this->title;
+$this->registerCss('
+.truncate {
+   max-width: 400px !important;
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
+}
+
+.untruncate{
+   overflow: visible;
+   white-space: normal;
+   width: auto;
+}
+');
 ?>
 <div class="task-index">
 
@@ -27,6 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'formatter' => [
             'class' => 'yii\i18n\Formatter',
+            'timeZone' => 'Europe/Minsk',
             'dateFormat' => 'yyy MM dd',
             'datetimeFormat' => 'php: Y.m.d | H:i',
         ],
@@ -64,12 +80,37 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'text',
                 'format' => 'html',
                 'label' => 'Text',
+                'contentOptions' => ['class' => 'truncate'],
                 'value' => function ($model) {
                     return preg_replace("/(^|[\n ])([\w]*?)((ht|f)tp(s)?:\/\/[\w]+[^ ,\"\n\r\t<]*)/is",
                         "$1$2<a href=\"$3\" >$3</a>", $model->text);
                 },
             ],
-//                'files',
+            [
+                'label' => 'Attachment files',
+                'format' => 'html',
+                'contentOptions' => ['class' => 'truncate'],
+                'content' => function ($model) {
+                    $content = '';
+                    foreach ($model->attachmentFiles as $file) {
+                        $content .=
+                            Html::tag('div',
+                                Html::a(
+                                    Html::tag('i', '', ['class' => 'glyphicon glyphicon-save']),
+                                    "/task/download?id=" . $file->id, ['data-pjax' => 0]),
+                                ['style' => 'background:url(' .
+                                    Url::base(true) . Yii::$app->storage->getFile($file->name) . ');
+                                    background-size: cover;
+                                    height: 50px;
+                                    width: 50px;
+                                    float: left;
+                                    margin: 1px',
+                                ]);
+                    }
+                    return $content;
+                }
+            ],
+
             [
                 'attribute' => 'userName',
                 'label' => 'Executor',
@@ -89,6 +130,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'createdAt',
                 'value' => 'createdAt',
+                'contentOptions' => ['style' => 'width:130px;  min-width:130px;  '],
                 'format' => 'datetime',
                 'filter' => DatePicker::widget([
                     'model' => $searchModel,
@@ -104,6 +146,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'updatedAt',
                 'value' => 'updatedAt',
+                'contentOptions' => ['style' => 'width:130px;  min-width:130px;  '],
                 'format' => 'datetime',
                 'filter' => DatePicker::widget([
                     'model' => $searchModel,

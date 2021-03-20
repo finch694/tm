@@ -25,7 +25,7 @@ class TaskStatusController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['update','create','delete','index','view'],
+                        'actions' => ['update', 'create', 'delete', 'index', 'view'],
                         'allow' => true,
                         'roles' => ['admin'],
                     ],
@@ -83,6 +83,7 @@ class TaskStatusController extends Controller
         $model = new TaskStatus();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $this->log('create', $model->text, $model->id);
             return $this->redirect(['index']);
         }
 
@@ -103,6 +104,7 @@ class TaskStatusController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $this->log('update', $model->text, $model->id);
             return $this->redirect(['index']);
         }
 
@@ -120,7 +122,9 @@ class TaskStatusController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
+        $model->delete();
+        $this->log('delete', $model->text, $id);
 
         return $this->redirect(['index']);
     }
@@ -139,5 +143,10 @@ class TaskStatusController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    private function log(string $action, string $title, int $modelId)
+    {
+        Yii::info($action . ' status "' . $title . '"(id-' . $modelId . ')', 'log');
     }
 }

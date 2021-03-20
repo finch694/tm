@@ -7,7 +7,7 @@
 
 use common\widgets\fileInput\FileInputAsset;
 use yii\helpers\Url;
-
+//todo id generator
 FileInputAsset::register($this);
 $modelName = explode("\\", $model::className());
 $modelName = end($modelName);
