@@ -98,8 +98,8 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
         Yii::info('logout','log');
+        Yii::$app->user->logout();
         return $this->goHome();
     }
 }

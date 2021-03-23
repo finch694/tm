@@ -13,7 +13,6 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property string $title
  * @property string|null $text
- * @property $files
  * @property int $status_id
  * @property int $user_id
  * @property int $manager_id
@@ -23,6 +22,7 @@ use yii\db\ActiveRecord;
  * @property int|null $deletedAt
  * @property int $priority_id
  *
+ * @property AttachmentFiles[] $attachmentFiles
  * @property TaskPriority $priority
  * @property TaskStatus $status
  * @property User $user
@@ -148,7 +148,7 @@ class Task extends ActiveRecord
 
     public function getAttachmentFiles()
     {
-        return $this->hasMany(AttachmentFiles::class,['task_id'=>'id']);
+        return $this->hasMany(AttachmentFiles::class, ['task_id' => 'id']);
     }
 
     /**
@@ -160,63 +160,19 @@ class Task extends ActiveRecord
         return new TaskQuery(get_called_class());
     }
 
-    /**
-     * @param bool $insert
-     * @return bool
-     */
-//    public function beforeSave($insert)
-//    {
-//        $this->text = strip_tags($this->text);
-//        $this->text = preg_replace("/(^|[\n ])([\w]*?)((ht|f)tp(s)?:\/\/[\w]+[^ ,\"\n\r\t<]*)/is",
-//            "$1$2<a href=\"$3\" >$3</a>",
-//            $this->text);
-//        return parent::beforeSave($insert);
-//    }
-
-    /**
-     * soft delete task
-     */
-    public function softDelete()
-    {
-        if (!$this->deletedAt) {
-            $this->deletedAt = time();
-            $this->save();
-        }
-    }
-
-    /**
-     *  recover task
-     */
-    public function recover()
-    {
-        if ($this->deletedAt) {
-            $this->deletedAt = null;
-            $this->save();
-        }
-    }
-
     public function upload()
     {
-//        $this->save(false, ['id']);
 
-//        var_dump($this->id); exit();
         if ($this->tfiles) {
             $names = json_decode($this->files);
             if ($this->validate()) {
-//            $path = Yii::$app->params['storagePath'];
                 foreach ($this->tfiles as $file) {
-//                $name = sha1_file($file->tempName) . time() . '.' . $file->extension;
                     $names[] = Yii::$app->storage->getFile(Yii::$app->storage->saveUploadedFile($file));
-//                $file->saveAs($path . $name);
-//                $names[] = $name;
                 }
             }
             $this->files = json_encode($names);
-//        var_dump(json_encode($names));exit;
-//        $this->save(false, ['files']);
 
             $this->tfiles = null;
-//        return $this->save();
         }
         return true;
     }

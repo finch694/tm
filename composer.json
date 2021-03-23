@@ -26,6 +26,7 @@
     "kartik-v/yii2-widget-datepicker": "@dev",
     "kartik-v/yii2-widget-colorinput": "*",
     "dmstr/yii2-adminlte-asset": "^2.1",
+    "kartik-v/yii2-widget-select2": "@dev",
     "ext-json": "*"
   },
   "require-dev": {

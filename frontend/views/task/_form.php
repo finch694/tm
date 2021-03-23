@@ -17,10 +17,6 @@ $model->text = strip_tags($model->text);
 $statusColor = array_map(function ($val) {
     return ["style" => "background-color:" . $val];
 }, $statusColor);
-//if ($model->status_id){
-//    $bgColor = $statusColor[$model->status_id]['style'];
-//}
-//var_dump($bgColor);exit();
 ?>
 
 <div class="task-form">

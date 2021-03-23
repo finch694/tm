@@ -30,11 +30,13 @@ $statusColor = array_map(function ($val){ return  ["style"=>"background-color:".
                 echo $form->field($model, 'user_id')->widget(Select2::class,[
                     'data' => $userList,
                     'theme' => Select2::THEME_DEFAULT,
-                    'options' => ['placeholder' => 'Select executor ...'],
+                    'options' => ['placeholder' => 'Select executor ...', 'class'=>'form-control'],
                     'pluginOptions' => [
                         'allowClear' => true
                     ],
                 ])->label('Executor');
+//                    ->dropDownList($userList, ['prompt' => 'not set'])
+//                    ->label('Executor');
                 break;
             case 'priority':
                 echo $form->field($model, 'priority_id')

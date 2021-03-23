@@ -24,6 +24,8 @@ class TaskSearch extends Task
 
     public $statusFinally;
 
+    public $page;
+
     /**
      * {@inheritdoc}
      */
@@ -31,7 +33,7 @@ class TaskSearch extends Task
     {
         return [
             [['id', 'status_id', 'user_id', 'manager_id', 'creator_id', 'deletedAt', 'priority_id'], 'integer'],
-            [['title', 'text', 'files', 'userName', 'managerName', 'creatorName', 'taskStatus', 'taskPriority', 'createdAt', 'updatedAt'], 'safe'],
+            [['title', 'page', 'text', 'files', 'userName', 'managerName', 'creatorName', 'taskStatus', 'taskPriority', 'createdAt', 'updatedAt'], 'safe'],
             [['statusFinally'], 'boolean'],
         ];
     }
@@ -66,7 +68,9 @@ class TaskSearch extends Task
             ->joinWith('priority')
             ->joinWith('creator')
             ->joinWith('manager')
-            ->joinWith('attachmentFiles');
+//            ->joinWith('attachmentFiles')
+             ->orderBy('task_priority.value');
+//        $query=$this->getQuery($params);
 
         // add conditions that should always apply here
 
@@ -95,7 +99,7 @@ class TaskSearch extends Task
             'asc' => ['task_priority.value' => SORT_ASC],
             'desc' => ['task_priority.value' => SORT_DESC],
         ];
-        $dataProvider->sort->defaultOrder = ['taskPriority' => SORT_ASC];
+//        $dataProvider->sort->defaultOrder = ['taskPriority' => SORT_ASC];
 
         $this->load($params);
 
@@ -150,6 +154,64 @@ class TaskSearch extends Task
                 $query->andFilterWhere(['is', 'user_id', new Expression('null')]);
             }
         }
+//        $dataProvider->prepare();
+//                var_dump($dataProvider->getModels());exit();
+
         return $dataProvider;
     }
+
+//    public function getQuery($params)
+//    {
+//        $query = Task::find()
+//            ->joinWith('user')
+//            ->joinWith('status')
+//            ->joinWith('priority')
+//            ->joinWith('creator')
+//            ->joinWith('manager')
+////            ->joinWith('attachmentFiles')
+//            ->orderBy('task_priority.value');
+//
+//        $this->load($params);
+//        $query->andFilterWhere([
+//            'task.id' => $this->id,
+//            'status_id' => $this->status_id,
+//            'manager_id' => $this->manager_id,
+//            'creator_id' => $this->creator_id,
+//            'priority_id' => $this->priority_id,
+//        ]);
+//
+//        $query->andFilterWhere(['ilike', 'task.title', $this->title])
+//            ->andFilterWhere(['ilike', 'task.text', $this->text])
+//            ->andFilterWhere(['ilike', 'u.username', $this->userName])
+//            ->andFilterWhere(['ilike', 'uc.username', $this->creatorName])
+//            ->andFilterWhere(['ilike', 'um.username', $this->managerName])
+//            ->andFilterWhere(['task_status.id' => $this->taskStatus])
+//            ->andFilterWhere(['task_priority.id' => $this->taskPriority])
+//            ->andFilterWhere(['task_status.finally' => $this->statusFinally]);
+//        if (isset($this->deletedAt)) {
+//            if ($this->deletedAt) {
+//                $query->andFilterWhere(['is not', 'task.deletedAt', new Expression('null')]);
+//            } else {
+//                $query->andFilterWhere(['is', 'task.deletedAt', new Expression('null')]);
+//            }
+//        }
+//        if ($this->createdAt) {
+//            $date = new DateTime($this->createdAt);
+//            $start = $date->getTimestamp();
+//            $query->andFilterWhere(['between', 'task.createdAt', $start, $start + 86400]);
+//        }
+//        if ($this->updatedAt) {
+//            $date = new DateTime($this->updatedAt);
+//            $start = $date->getTimestamp();
+//            $query->andFilterWhere(['between', 'task.updatedAt', $start, $start + 86400]);
+//        }
+//        if (isset($this->user_id)) {
+//            if ($this->user_id !== 0) {
+//                $query->andFilterWhere(['user_id' => $this->user_id]);
+//            } else {
+//                $query->andFilterWhere(['is', 'user_id', new Expression('null')]);
+//            }
+//        }
+//        return $query;
+//    }
 }

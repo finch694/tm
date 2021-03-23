@@ -1,13 +1,13 @@
 <?php
 
-namespace backend\controllers;
+namespace frontend\controllers;
 
+use common\models\TaskPriority;
+use common\models\TaskStatus;
 use common\models\AttachmentFiles;
-use backend\models\TaskPriority;
-use backend\models\TaskStatus;
 use common\models\User;
 use Yii;
-use backend\models\Task;
+use frontend\models\Task;
 use common\models\TaskSearch;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -38,6 +38,14 @@ class TaskController extends Controller
                         'roles' => ['manager'],
                     ],
                     [
+                        'actions' => [
+                            'index', 'unassigned-tasks', 'my-tasks', 'download',
+                            'my-active-tasks', 'my-closed-tasks', 'view', 'modal', 'change-status'
+                        ],
+                        'allow' => true,
+                        'roles' => ['user'],
+                    ],
+                    [
                         'actions' => ['deleted-tasks', 'recover'],
                         'allow' => true,
                         'roles' => ['admin'],
@@ -50,7 +58,7 @@ class TaskController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::class,
+                'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -121,8 +129,17 @@ class TaskController extends Controller
     public function index($params, $title)
     {
         $searchModel = new TaskSearch();
+
         $dataProvider = $searchModel->search(array_merge_recursive(Yii::$app->request->queryParams, $params));
+        $dataProvider->pagination = ['pageSize' => 10];
+        $dataProvider->prepare();
         $statusList = TaskStatus::find()
+            ->select(['text', 'id', 'finally', 'color'])
+            ->andWhere(['deletedAt' => null])
+            ->indexBy('id')
+            ->asArray()
+            ->all();
+        $statusSearchList = TaskStatus::find()
             ->select(['text', 'id'])
             ->andWhere(['deletedAt' => null])
             ->indexBy('id')
@@ -134,13 +151,24 @@ class TaskController extends Controller
             ->indexBy('id')
             ->asArray()
             ->column();
+        $managerList = User::find()
+            ->select(['username', 'id'])
+            ->leftJoin('auth_assignment', '"user".id = cast( auth_assignment.user_id as integer)')
+            ->andWhere(['status' => User::STATUS_ACTIVE])
+            ->andWhere(['!=', "item_name", "banned"])
+            ->andWhere(['!=', "item_name", "user"])
+            ->indexBy('id')
+            ->asArray()
+            ->column();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'statusList' => $statusList,
+            'statusSearchList' => $statusSearchList,
             'priorityList' => $priorityList,
             'title' => $title,
+            'managerList' => $managerList,
         ]);
     }
 
@@ -266,33 +294,18 @@ class TaskController extends Controller
 
     }
 
-    /**
-     * Deletes an existing Task model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
+    public function actionChangeStatus($id, $status)
     {
-        if ($model = $this->findModel($id)) {
-            $model->softDelete();
-            $this->log('delete', $model->title, $id);
-        }
-        return $this->redirect(Yii::$app->request->referrer);
-    }
+        $model = $this->findModel($id);
+        $model->status_id = $status;
+        $model->save();
+        return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
 
-    public function actionRecover($id)
-    {
-        if ($model = $this->findModel($id)) {
-            $model->recover();
-            $this->log('recover', $model->title, $id);
-        }
-        return $this->redirect(Yii::$app->request->referrer);
     }
 
     public function actionModal($id, $mod)
     {
+//        var_dump('ok');exit();
         $model = $this->findModel($id);
 
         return $this->taskCreateOrUpdate($model, 'modal-change', $mod);
@@ -345,7 +358,7 @@ class TaskController extends Controller
     public function actionDownload($id)
     {
         $file = AttachmentFiles::findOne($id);
-        $path =  Yii::$app->storage->getPath($file->name);
+        $path = Yii::$app->storage->getPath($file->name);
         if (file_exists($path)) {
             return Yii::$app->response->sendFile($path, $file->native_name)->send();
         }
