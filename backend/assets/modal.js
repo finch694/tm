@@ -7,12 +7,14 @@ $(function () {
                 data = $(this).data();
             }
             let mod = $(this).attr('class');
-            if (mod.indexOf('user')) {
+            if (mod.indexOf('user') + 1) {
                 mod = 'user';
-            } else if (mod.indexOf('priority')) {
+            } else if (mod.indexOf('priority') + 1) {
                 mod = 'priority';
-            } else if (mod.indexOf('status')) {
+            } else if (mod.indexOf('status') + 1) {
                 mod = 'status';
+            } else if (mod.indexOf('manager') + 1) {
+                mod = 'manager';
             }
             $('#modal-change').modal('show').find('.modal-body').load('/task/modal?id=' + data.key + '&mod=' + mod);
         }

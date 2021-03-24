@@ -7,6 +7,7 @@ use yii\widgets\ActiveForm;
 /* @var $model common\models\Task */
 /* @var $form yii\widgets\ActiveForm */
 /* @var array $userList */
+/* @var array $managerList */
 /* @var array $statusList */
 /* @var array $statusColor */
 /* @var array $priorityList */

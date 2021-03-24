@@ -50,7 +50,7 @@ $statusColor = array_map(function ($val) {
 
     <?php if (Yii::$app->user->can('admin'))
         echo $form->field($model, 'manager_id')->widget(Select2::class, [
-            'data' => $userList,
+            'data' => $managerList,
             'theme' => Select2::THEME_DEFAULT,
             'options' => ['placeholder' => 'Select executor ...', 'options' => [Yii::$app->user->getId() => ['selected' => true]]],
             'pluginOptions' => [

@@ -252,7 +252,8 @@ class TaskController extends Controller
                 'statusList' => $statusList,
                 'priorityList' => $priorityList,
                 'statusColor' => $statusColor,
-                'changeMod' => $changeMod
+                'changeMod' => $changeMod,
+                'managerList' => $managerList,
             ]);
         }
         return $this->render($view, [

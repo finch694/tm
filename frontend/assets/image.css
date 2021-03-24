@@ -1,0 +1,9 @@
+.container-img{
+    width: 100px;
+    height: 100px;
+    float: left;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover !important;
+    margin: 5px;
+}

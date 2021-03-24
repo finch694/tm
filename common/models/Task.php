@@ -137,6 +137,27 @@ class Task extends ActiveRecord
     }
 
     /**
+     * soft delete task
+     */
+    public function softDelete()
+    {
+        if (!$this->deletedAt) {
+            $this->deletedAt = time();
+            $this->save();
+        }
+    }
+    /**
+     *  recover task
+     */
+    public function recover()
+    {
+        if ($this->deletedAt) {
+            $this->deletedAt = null;
+            $this->save();
+        }
+    }
+
+    /**
      * Gets query for [[Creator]].
      *
      * @return \yii\db\ActiveQuery|UserQuery

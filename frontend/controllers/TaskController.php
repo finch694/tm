@@ -280,7 +280,8 @@ class TaskController extends Controller
                 'statusList' => $statusList,
                 'priorityList' => $priorityList,
                 'statusColor' => $statusColor,
-                'changeMod' => $changeMod
+                'changeMod' => $changeMod,
+                'managerList' => $managerList,
             ]);
         }
         return $this->render($view, [
@@ -292,6 +293,23 @@ class TaskController extends Controller
             'statusColor' => $statusColor,
         ]);
 
+    }
+    public function actionRecover($id)
+    {
+        if ($model = $this->findModel($id)) {
+            $model->recover();
+            $this->log('recover', $model->title, $id);
+        }
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    public function actionDelete($id)
+    {
+        if ($model = $this->findModel($id)) {
+            $model->softDelete();
+            $this->log('delete', $model->title, $id);
+        }
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     public function actionChangeStatus($id, $status)
@@ -305,11 +323,12 @@ class TaskController extends Controller
 
     public function actionModal($id, $mod)
     {
-//        var_dump('ok');exit();
         $model = $this->findModel($id);
-
-        return $this->taskCreateOrUpdate($model, 'modal-change', $mod);
-
+        if ($mod ==='manager' && !Yii::$app->user->can('admin')){
+            return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
+        }else {
+            return $this->taskCreateOrUpdate($model, 'modal-change', $mod);
+        }
     }
 
     /**
