@@ -1,4 +1,5 @@
 <?php
+
 namespace backend\controllers;
 
 use Yii;
@@ -79,12 +80,14 @@ class SiteController extends Controller
         $this->layout = 'main-login';
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            Yii::info('login','log');
+        if ($model->load(Yii::$app->request->post())  && $model->login()) {
+            if (!Yii::$app->user->can('manager')){
+                return $this->actionLogout();
+            }
+            Yii::info('login', 'log');
             return $this->goBack();
         } else {
             $model->password = '';
-
             return $this->render('login', [
                 'model' => $model,
             ]);
@@ -98,7 +101,8 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::info('logout','log');
+        $messageLog = Yii::$app->user->getId() . '-id logout';
+        Yii::info($messageLog, 'log');
         Yii::$app->user->logout();
         return $this->goHome();
     }

@@ -198,6 +198,12 @@ class Task extends ActiveRecord
         return true;
     }
 
+    public function getTextWithLinks()
+    {
+        return preg_replace("/(^|[\n ])([\w]*?)((ht|f)tp(s)?:\/\/[\w]+[^ ,\"\n\r\t<]*)/is",
+            "$1$2<a href=\"$3\" >$3</a>", $this->text);
+    }
+
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);

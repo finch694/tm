@@ -121,6 +121,7 @@ class TaskController extends Controller
     public function index($params, $title)
     {
         $searchModel = new TaskSearch();
+        Yii::$app->user->returnUrl = Yii::$app->request->url;
         $dataProvider = $searchModel->search(array_merge_recursive(Yii::$app->request->queryParams, $params));
         $statusList = TaskStatus::find()
             ->select(['text', 'id'])
@@ -238,11 +239,7 @@ class TaskController extends Controller
                     $this->saveFiles($files, $model->id);
                 }
                 $this->log($view, $model->title, $model->id);
-                if ($view === 'modal-change') {
-                    return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
-                } else {
-                    return $this->redirect(['task/index']);
-                }
+                return $this->redirect(Yii::$app->user->returnUrl ?: Yii::$app->homeUrl);
             }
         }
         if ($view === 'modal-change') {
@@ -346,7 +343,7 @@ class TaskController extends Controller
     public function actionDownload($id)
     {
         $file = AttachmentFiles::findOne($id);
-        $path =  Yii::$app->storage->getPath($file->name);
+        $path =  Yii::$app->storage->getFileLocation($file->name);
         if (file_exists($path)) {
             return Yii::$app->response->sendFile($path, $file->native_name)->send();
         }

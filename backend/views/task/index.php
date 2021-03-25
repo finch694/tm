@@ -82,8 +82,7 @@ $this->registerCss('
                 'label' => 'Text',
                 'contentOptions' => ['class' => 'truncate'],
                 'value' => function ($model) {
-                    return preg_replace("/(^|[\n ])([\w]*?)((ht|f)tp(s)?:\/\/[\w]+[^ ,\"\n\r\t<]*)/is",
-                        "$1$2<a href=\"$3\" >$3</a>", $model->text);
+                    return  $model->getTextWithLinks();
                 },
             ],
             [

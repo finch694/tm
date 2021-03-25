@@ -77,7 +77,7 @@ class Storage extends Component implements StorageInterface
         return unlink($this->getStoragePath() . $filename);
     }
 
-    public function getPath(string $filename)
+    public function getFileLocation(string $filename)
     {
         return $this->getStoragePath().$filename;
     }

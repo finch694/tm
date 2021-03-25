@@ -33,7 +33,7 @@ $statusColor = array_map(function ($val) {
                 echo $form->field($model, 'user_id')->widget(Select2::class, [
                     'data' => $userList,
                     'theme' => Select2::THEME_DEFAULT,
-                    'options' => ['placeholder' => 'Select executor ...', 'class' => 'form-control'],
+                    'options' => ['placeholder' => 'Select executor ...', 'class' => 'select2-search__field','style'=>'border-radius:0 !important'],
                     'pluginOptions' => [
                         'allowClear' => true
                     ],

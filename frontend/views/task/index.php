@@ -49,10 +49,12 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php
     echo LinkPager::widget([
         'pagination' => $dataProvider->pagination,
-        'hideOnSinglePage' => true,
-
     ]);
     ?>
+    <div class="summary">Showing <b>
+            <?= $dataProvider->pagination->offset + 1; ?>-<?= ($dataProvider->pagination->page + 1) * $dataProvider->pagination->pageSize > $dataProvider->pagination->totalCount ? $dataProvider->pagination->totalCount : ($dataProvider->pagination->page + 1) * $dataProvider->pagination->pageSize ; ?> </b>
+        of <b><?= $dataProvider->pagination->totalCount; ?></b> task.
+    </div>
     <div class="container-fluid">
         <div class="card-columns">
             <?php foreach ($dataProvider->getModels() as $model):
@@ -93,7 +95,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="box-body" style="display: none;">
                             <!-- post text -->
                             <div class="box-body bg-gray-active ">
-                                <div class=""> <?= $model->text ?></div>
+                                <div class=""> <?= $model->getTextWithLinks() ?></div>
                             </div>
                             <?php if ($model->attachmentFiles) : ?>
                                 <!-- Attachment -->

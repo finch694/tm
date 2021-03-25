@@ -7,9 +7,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model common\models\Task */
 
-$this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = '';
+$this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => [Yii::$app->user->returnUrl ?:'index']];
+$this->params['breadcrumbs'][] = $model->title;
 ImageAsset::register($this);
 ModalAsset::register($this);
 $btnClass = Yii::$app->user->can('manager')? 'btn mod':'';
@@ -41,7 +41,7 @@ $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
             ">
             <!-- post text -->
             <div class="box-body bg-gray-active ">
-                <div class=""> <?= $model->text ?></div>
+                <div class=""> <?= $model->getTextWithLinks() ?></div>
             </div>
             <?php if ($model->attachmentFiles) : ?>
                 <!-- Attachment -->

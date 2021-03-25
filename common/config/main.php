@@ -29,15 +29,23 @@ return [
                         $request = Yii::$app->getRequest();
                         $ip = $request instanceof Request ? $request->getUserIP() : '-';
                         $prefix['ip'] = $ip;
-                        $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
-                        if ($user) {
+
+                        $user = Yii::$app->has('user') ? Yii::$app->get('user') : null;
+                        if (stripos($message[0], 'logout') !== false) {
+                            $userID = (int)$message[0];
+//                            $message[0] = 'logout';
+                            $prefix['userId'] = $userID;
+                            $prefix['username'] = User::getNameById($userID);
+                        } elseif ($user) {
                             $userID = $user->getId(false);
                             $prefix['userId'] = $userID;
                             $prefix['username'] = User::getNameById($userID);
-                        }else{
+                        } else {
                             $prefix['userId'] = 'unknown';
                             $prefix['username'] = 'unknown';
                         }
+//                        $prefix['message'] = $message[0];
+
                         return json_encode($prefix);
                     }
                 ],

@@ -247,36 +247,19 @@ if (isset($user)) {
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="hidden-xs"><?= $username ?></span>
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu bg-light-blue-gradient">
                         <!-- User image -->
-                        <li class="user-header">
-
-
-                            <p>
-                                <?= $username ?>
-                                <small><?= $role ?></small>
-                            </p>
+                        <li class="text-center">
+                            <p class="margin"><?= $username ?></p>
+                            <p><small><?= $role ?></small></p>
                         </li>
-                        <!-- Menu Body -->
-                        <li class="user-body">
-                            <div class="col-xs-4 text-center">
-                                <a href="/task/my-tasks">Tasks</a>
-                            </div>
-                            <div class="col-xs-4 text-center">
-                                <a href="/task/created-tasks">Created tasks</a>
-                            </div>
-                            <div class="col-xs-4 text-center">
-                                <a href="/task/managed-tasks">Managed tasks</a>
-                            </div>
-                        </li>
-                        <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-<!--                                <a href="#" class="btn btn-default btn-flat">Profile</a>-->
+                                <!--                                <a href="#" class="btn btn-default btn-flat">Profile</a>-->
                             </div>
                             <div class="pull-right">
                                 <?= Html::a(
-                                    'Sign out',
+                                    'Logout',
                                     ['/site/logout'],
                                     ['data-method' => 'post', 'class' => 'btn btn-default btn-flat']
                                 ) ?>
