@@ -32,7 +32,7 @@ class TaskController extends Controller
                     [
                         'actions' => [
                             'index', 'managed-tasks', 'created-tasks', 'unassigned-tasks', 'my-tasks', 'download',
-                            'my-active-tasks', 'my-closed-tasks', 'view', 'create', 'update', 'delete', 'modal'
+                            'my-active-tasks', 'my-closed-tasks', 'view', 'create', 'update', 'delete', 'modal', 'modal-image'
                         ],
                         'allow' => true,
                         'roles' => ['manager'],
@@ -295,6 +295,14 @@ class TaskController extends Controller
 
         return $this->taskCreateOrUpdate($model, 'modal-change', $mod);
 
+    }
+
+    public function actionModalImage($id)
+    {
+        $model = $this->findModel($id);
+        return $this->renderAjax('modal-image', [
+            'model' => $model,
+        ]);
     }
 
     /**

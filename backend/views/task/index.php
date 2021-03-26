@@ -17,20 +17,6 @@ use yii\widgets\Pjax;
 ModalAsset::register($this);
 $this->title = $title;
 $this->params['breadcrumbs'][] = $this->title;
-$this->registerCss('
-.truncate {
-   max-width: 400px !important;
-   overflow: hidden;
-   white-space: nowrap;
-   text-overflow: ellipsis;
-}
-
-.untruncate{
-   overflow: visible;
-   white-space: normal;
-   width: auto;
-}
-');
 ?>
 <div class="task-index">
 
@@ -75,38 +61,38 @@ $this->registerCss('
                 'contentOptions' => ['class' => 'mod priority']
 
             ],
-//            'text:raw',
             [
                 'attribute' => 'text',
                 'format' => 'html',
                 'label' => 'Text',
                 'contentOptions' => ['class' => 'truncate'],
                 'value' => function ($model) {
-                    return  $model->getTextWithLinks();
+                    return $model->getTextWithLinks();
                 },
             ],
             [
                 'label' => 'Attachment files',
                 'format' => 'html',
-                'contentOptions' => ['class' => 'truncate'],
+                'contentOptions' => function ($model) {
+                    return ($model->attachmentFiles) ? ['class' => 'file'] : [];
+                },
                 'content' => function ($model) {
-                    $content = '';
-                    foreach ($model->attachmentFiles as $file) {
-                        $content .=
-                            Html::tag('div',
-                                Html::a(
-                                    Html::tag('i', '', ['class' => 'glyphicon glyphicon-save']),
-                                    "/task/download?id=" . $file->id, ['data-pjax' => 0]),
-                                ['style' => 'background:url(' .
-                                    Url::base(true) . Yii::$app->storage->getFile($file->name) . ');
-                                    background-size: cover;
-                                    height: 50px;
-                                    width: 50px;
-                                    float: left;
-                                    margin: 1px',
-                                ]);
+                    if ($countFiles = count($model->attachmentFiles)) {
+                        $limit = $countFiles > 1 ? 2 : 1;
+                        $content = $countFiles > 2 ? '<div><small>Total files: <b>' . $countFiles . '</b></small></div>' : '';
+                        for ($i = 0; $i < $limit; $i++) {
+                            $content .=
+                                Html::tag('div',
+                                    Html::a(
+                                        Html::tag('i', '', ['class' => 'glyphicon glyphicon-save']),
+                                        "/task/download?id=" . $model->attachmentFiles[$i]['id'], ['data-pjax' => 0]),
+                                    ['style' => 'background:url(' .
+                                        Url::base(true) . Yii::$app->storage->getFile($model->attachmentFiles[$i]['name']) . ');
+                                    ', 'class' => 'img-min'
+                                    ]);
+                        }
+                        return $content;
                     }
-                    return $content;
                 }
             ],
 
@@ -181,4 +167,5 @@ $this->registerCss('
     <?php Pjax::end(); ?>
 
 </div>
-<?= $this->render('../layouts/_modal-template', ['id' => 'modal-change']) ?>
+<?= $this->render('../layouts/_modal-template-sm', ['id' => 'modal-change-sm']) ?>
+<?= $this->render('../layouts/_modal-template-md', ['id' => 'modal-change-md']) ?>

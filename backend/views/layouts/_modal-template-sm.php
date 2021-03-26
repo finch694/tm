@@ -1,4 +1,5 @@
 <?php
+
 use yii\web\View;
 
 /**
@@ -12,7 +13,7 @@ use yii\web\View;
      aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
-            <div class="modal-body">
+            <div class="modal-body" style="display: inline-block; min-width: 100%;">
             </div>
         </div>
     </div>

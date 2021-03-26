@@ -39,7 +39,7 @@ class TaskController extends Controller
                     ],
                     [
                         'actions' => [
-                            'index', 'unassigned-tasks', 'my-tasks', 'download',
+                            'index', 'unassigned-tasks', 'my-tasks', 'download', 'modal-image',
                             'my-active-tasks', 'my-closed-tasks', 'view', 'modal', 'change-status'
                         ],
                         'allow' => true,
@@ -327,6 +327,13 @@ class TaskController extends Controller
         } else {
             return $this->taskCreateOrUpdate($model, 'modal-change', $mod);
         }
+    }
+    public function actionModalImage($id)
+    {
+        $model = $this->findModel($id);
+        return $this->renderAjax('modal-image', [
+            'model' => $model,
+        ]);
     }
 
     /**

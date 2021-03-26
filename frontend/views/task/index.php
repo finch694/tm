@@ -52,7 +52,8 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);
     ?>
     <div class="summary">Showing <b>
-            <?= $dataProvider->pagination->offset + 1; ?>-<?= ($dataProvider->pagination->page + 1) * $dataProvider->pagination->pageSize > $dataProvider->pagination->totalCount ? $dataProvider->pagination->totalCount : ($dataProvider->pagination->page + 1) * $dataProvider->pagination->pageSize ; ?> </b>
+            <?= $dataProvider->pagination->offset + 1; ?>
+            -<?= ($dataProvider->pagination->page + 1) * $dataProvider->pagination->pageSize > $dataProvider->pagination->totalCount ? $dataProvider->pagination->totalCount : ($dataProvider->pagination->page + 1) * $dataProvider->pagination->pageSize; ?> </b>
         of <b><?= $dataProvider->pagination->totalCount; ?></b> task.
     </div>
     <div class="container-fluid">
@@ -101,7 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <!-- Attachment -->
                                 <div class="clearfix bg-info">
                                     <?php foreach ($model->attachmentFiles as $file) : ?>
-                                        <div class="container-img"
+                                        <div class="container-img file" data-key="<?= $model->id ?>"
                                              style="background: url('http://tmback.test<?= Yii::$app->storage->getFile($file->name) ?>');">  <?php //todo url; ?>
                                             <a href="/task/download?id=<?= $file->id ?>" data-pjax="0"><i
                                                         class="glyphicon glyphicon-save"></i> </a>
@@ -213,4 +214,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php endforeach; ?>
         </div>
     </div>
-    <?= $this->render('../layouts/_modal-template', ['id' => 'modal-change']) ?>
+    <?= $this->render('../layouts/_modal-template-sm', ['id' => 'modal-change-sm']) ?>
+    <?= $this->render('../layouts/_modal-template-md', ['id' => 'modal-change-md']) ?>
+

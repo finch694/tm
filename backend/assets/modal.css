@@ -1,0 +1,29 @@
+.truncate {
+    max-width: 400px !important;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.untruncate {
+    overflow: visible;
+    white-space: normal;
+    width: auto;
+}
+
+.img-min {
+    background-size: cover !important;
+    height: 50px;
+    width: 50px;
+    float: left;
+    margin: 1px
+}
+
+.img-max {
+    background-size: cover !important;
+    height: 275px;
+    width: 275px;
+    float: left;
+    margin: 5px;
+    border: 1px solid
+}
