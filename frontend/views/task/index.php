@@ -3,6 +3,7 @@
 use backend\assets\ModalAsset;
 use frontend\assets\ImageAsset;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\LinkPager;
 
 /* @var $this yii\web\View */
@@ -103,8 +104,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <div class="clearfix bg-info">
                                     <?php foreach ($model->attachmentFiles as $file) : ?>
                                         <div class="container-img file" data-key="<?= $model->id ?>"
-                                             style="background: url('http://tmback.test<?= Yii::$app->storage->getFile($file->name) ?>');">  <?php //todo url; ?>
-                                            <a href="/task/download?id=<?= $file->id ?>" data-pjax="0"><i
+                                             style="background: url('<?= Url::base(true). Yii::$app->storage->getFile($file->name) ?>');">
+                                            <a class="download" href="/task/download?id=<?= $file->id ?>" data-pjax="0"><i
                                                         class="glyphicon glyphicon-save"></i> </a>
                                         </div>
                                     <?php endforeach; ?>

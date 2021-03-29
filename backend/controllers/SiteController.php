@@ -61,8 +61,6 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-//        var_dump((new User())->rules());
-//        exit();
         return $this->render('index');
     }
 
@@ -101,8 +99,9 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        $messageLog = Yii::$app->user->getId() . '-id logout';
-        Yii::info($messageLog, 'log');
+        Yii::info('logout', 'log');
+        Yii::$app->log->getLogger()->flush(true);
+
         Yii::$app->user->logout();
         return $this->goHome();
     }

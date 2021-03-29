@@ -3,6 +3,7 @@
 use backend\assets\ModalAsset;
 use frontend\assets\ImageAsset;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Task */
@@ -47,8 +48,8 @@ $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
                 <!-- Attachment -->
                 <div class="clearfix bg-info">
                     <?php foreach ($model->attachmentFiles as $file) : ?>
-                        <div class="container-img"
-                             style="background: url('http://tmback.test<?= Yii::$app->storage->getFile($file->name) ?>');"> <?php //todo url; ?>
+                        <div class="container-img file" data-key="<?=$model->id?>"
+                             style="background: url('<?= Url::base(true). Yii::$app->storage->getFile($file->name) ?>');">
                             <a href="/task/download?id=<?= $file->id ?>" data-pjax="0"><i
                                         class="glyphicon glyphicon-save"></i> </a>
                         </div>
@@ -66,7 +67,7 @@ $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
             </div>
         </div>
         <div class="box-footer box-comments <?= $mainBG ?>">
-            <div class=" pull-left label btn-sm bg-gray-active <?= $btnClass?> user"data-key="<?= $model->id ?>">
+            <div class=" pull-left label btn-sm bg-gray-active <?= $btnClass?> user" data-key="<?= $model->id ?>">
                 Executor: <?= ($model->user) ? $model->user->username : 'not set' ?>
             </div>
             <div class="pull-right">
@@ -115,5 +116,5 @@ $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
     </div>
 
 </div>
-<?= $this->render('../layouts/_modal-template', ['id' => 'modal-change']) ?>
-
+<?= $this->render('../layouts/_modal-template-sm', ['id' => 'modal-change-sm']) ?>
+<?= $this->render('../layouts/_modal-template-md', ['id' => 'modal-change-md']) ?>

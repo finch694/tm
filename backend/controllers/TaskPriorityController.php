@@ -113,20 +113,6 @@ class TaskPriorityController extends Controller
         ]);
     }
 
-    /**
-     * Deletes an existing TaskPriority model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)   //todo deleting
-    {
-//        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
-
     public function actionChangeActive($id)
     {
         $model = $this->findModel($id);

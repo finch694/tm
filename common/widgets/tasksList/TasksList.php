@@ -1,7 +1,7 @@
 <?php
 
 
-namespace backend\widgets\tasksList;
+namespace common\widgets\tasksList;
 
 
 use common\models\Task;

@@ -259,7 +259,7 @@ class TaskController extends Controller
                 }
             }
             if ($model->save()) {
-                if ($toDelete = Yii::$app->request->post("toDelete")) { //todo remake
+                if ($toDelete = Yii::$app->request->post("toDelete")) { //todo find better way to delete
                     $this->deleteFiles($toDelete);
                 }
                 if ($files = UploadedFile::getInstances($model, 'files')) {

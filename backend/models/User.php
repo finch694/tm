@@ -4,6 +4,7 @@ namespace backend\models;
 
 use common\models\Task;
 use common\models\TaskQuery;
+use common\models\UserQuery;
 use ReflectionClass;
 use Yii;
 use common\models\User as CommonUser;

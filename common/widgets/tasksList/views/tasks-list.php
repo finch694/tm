@@ -16,10 +16,9 @@ $count = count($taskList);
     <ul class="dropdown-menu">
         <li class="header">You have <?= $count ?> open <?= ($count > 1) ? 'tasks' : 'task' ?></li>
         <li>
-            <!-- inner menu: contains the actual data -->
             <ul class="menu">
                 <?php foreach ($taskList as $task): ?>
-                    <li><!-- Task item -->
+                    <li>
                         <a href="/task/view?id=<?= $task['id'] ?>">
                             <h3>
                                 <?= $task['title'] ?>

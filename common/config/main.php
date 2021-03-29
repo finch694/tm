@@ -31,12 +31,7 @@ return [
                         $prefix['ip'] = $ip;
 
                         $user = Yii::$app->has('user') ? Yii::$app->get('user') : null;
-                        if (stripos($message[0], 'logout') !== false) {
-                            $userID = (int)$message[0];
-//                            $message[0] = 'logout';
-                            $prefix['userId'] = $userID;
-                            $prefix['username'] = User::getNameById($userID);
-                        } elseif ($user) {
+                        if ($user) {
                             $userID = $user->getId(false);
                             $prefix['userId'] = $userID;
                             $prefix['username'] = User::getNameById($userID);

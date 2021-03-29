@@ -30,7 +30,10 @@ $(function () {
             $('#modal-change-md').modal('show').find('.modal-body').load('/task/modal-image?id=' + data.key);
         }
     );
-
+    $(document).on('click', '.file a', function (e) {
+            e.stopPropagation();
+        }
+    );
     $(document).on('mouseenter', '.mod ', function () {
         $(this).css('cursor', 'pointer').css('box-shadow', 'inset 0 ' + ($(this).height() + 20) + 'px 0  #D2D6DE');
     });

@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use backend\models\UserQuery;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;

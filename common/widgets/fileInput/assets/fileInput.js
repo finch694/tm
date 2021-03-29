@@ -1,17 +1,14 @@
 $(function () {
 //todo refactor
-    var maxFiles = 6;
+    var maxFiles = 10;
 
-    var errMessage = 0;
-
-    var defaultUploadBtn = $('#uploadbtn');
+    var defaultUploadBtn = $(defaultUploadBtnID);
 
     var dataArray = [];
 
     var allFiles = new DataTransfer();
 
     function prepareToUpload() {
-        // console.log(dataArray);
         var names = [];
         for (let i = 0; i < dataArray.length; i++) {
             names.push(dataArray[i].name);
@@ -22,18 +19,13 @@ $(function () {
                 result.items.add(allFiles.files[i]);
             }
         }
-        // console.log(names);
-        // console.log('res:');
-        // console.log(result);
-        $("#uploadbtn")[0].files = result.files;
-        // console.log($('#uploadbtn')[0].files)
+        defaultUploadBtn[0].files = result.files;
     }
 
     defaultUploadBtn.on('change', function () {
         var files = $(this)[0].files;
         for (var i = 0; i < files.length; i++)
             allFiles.items.add(files[i]);
-        // console.log(allFiles);
         if (files.length <= maxFiles) {
             loadInView(files);
         } else {
@@ -45,37 +37,22 @@ $(function () {
     function loadInView(files) {
         $('#new-files').show();
         $.each(files, function (index, file) {
-            if (!files[index].type.match('image.*')) {
-                if (errMessage == 0) {
-                    $('#drop-files p').html('Эй! только изображения!');
-                    ++errMessage
-                } else if (errMessage == 1) {
-                    $('#drop-files p').html('Стоп! Загружаются только изображения!');
-                    ++errMessage
-                } else if (errMessage == 2) {
-                    $('#drop-files p').html("Не умеешь читать? Только изображения!");
-                    ++errMessage
-                } else if (errMessage == 3) {
-                    $('#drop-files p').html("Хорошо! Продолжай в том же духе");
-                    errMessage = 0;
-                }
+            if ((dataArray.length + files.length) <= maxFiles) {
+                $('#upload-button').css({'display': 'block'});
             } else {
-                if ((dataArray.length + files.length) <= maxFiles) {
-                    $('#upload-button').css({'display': 'block'});
-                } else {
-                    alert('Вы не можете загружать больше ' + maxFiles + ' изображений!');
-                    return;
-                }
-                var fileReader = new FileReader();
-                fileReader.onload = (function (file) {
-                    return function (e) {
-                        dataArray.push({name: file.name, value: this.result});
-                        addImage((dataArray.length - 1));
-                        prepareToUpload();
-                    };
-                })(files[index]);
-                fileReader.readAsDataURL(file);
+                alert(maxFiles + ' - maximum count of files to upload!');
+                return;
             }
+            var fileReader = new FileReader();
+            fileReader.onload = (function (file) {
+                return function (e) {
+                    dataArray.push({name: file.name, value: this.result});
+                    addImage((dataArray.length - 1));
+                    prepareToUpload();
+                };
+            })(files[index]);
+            fileReader.readAsDataURL(file);
+            // }
         });
         return false;
     }

@@ -12,7 +12,7 @@ use yii\web\View;
      aria-labelledby="mySmallModalLabel"
      aria-hidden="true" >
     <div class="modal-dialog modal-md" >
-        <div class="modal-content" style=" ">
+        <div class="modal-content">
             <div class="modal-body" style="display: inline-block; ">
             </div>
         </div>
