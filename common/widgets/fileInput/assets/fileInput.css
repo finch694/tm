@@ -5,11 +5,11 @@
     margin: 10px 5px 0 0;
     float: left;
 }
-#new-files {
+[id^=new-files] {
     clear: left;
 }
 
-#uploadbtn {
+[id^=uploadbtn] {
     clear: left;
     padding-top: 1em;
 }
@@ -18,7 +18,3 @@
     float: right;
     margin-right: 2px;
 }
-
-/*.delete-button {*/
-/*    float: right;*/
-/*}*/

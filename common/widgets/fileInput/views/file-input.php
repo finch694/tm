@@ -11,38 +11,164 @@ use yii\web\View;
  * @var $id
  */
 
-$this->registerJs("var defaultUploadBtnID = '#uploadbtn{$id}';", View::POS_HEAD);
-//todo id generator
+$this->registerJs("
+ var maxFiles = 10;
+
+    var dataArray{$id} = [];
+
+    var allFiles{$id} = new DataTransfer();
+
+    function prepareToUpload() {
+        var names = [];
+        for (let i = 0; i < dataArray{$id}.length; i++) {
+            names.push(dataArray{$id}[i].name);
+        }
+        var result = new DataTransfer();
+        for (let i = 0; i < allFiles{$id}.files.length; i++) {
+            if (names.includes(allFiles{$id}.files[i].name)) {
+                result.items.add(allFiles{$id}.files[i]);
+            }
+        }
+        $('#uploadbtn-{$id}')[0].files = result.files;
+    }
+
+    $('#uploadbtn-{$id}').on('change', function () {
+        var files{$id} = $(this)[0].files;
+        for (var i = 0; i < files{$id}.length; i++)
+            allFiles{$id}.items.add(files{$id}[i]);
+        if (files{$id}.length <= maxFiles) {
+            loadInView(files{$id});
+        } else {
+            alert(maxFiles + ' - maximum count of files to upload!');
+            files{$id}.length = 0;
+        }
+    });
+
+    function loadInView(files{$id}) {
+        $('#new-files-{$id}').show();
+        $.each(files{$id}, function (index, file) {
+            if ((dataArray{$id}.length + files{$id}.length) <= maxFiles) {
+                $('#upload-button-{$id}').css({'display': 'block'});
+            } else {
+                alert(maxFiles + ' - maximum count of files to upload!');
+                return;
+            }
+            var fileReader = new FileReader();
+            fileReader.onload = (function (file) {
+                return function (e) {
+                    dataArray{$id}.push({name: file.name, value: this.result});
+                    addImage((dataArray{$id}.length - 1));
+                    prepareToUpload();
+                };
+            })(files{$id}[index]);
+            fileReader.readAsDataURL(file);
+        });
+        return false;
+    }
+
+    function addImage(ind) {
+        if (ind < 0) {
+            start = 0;
+            end = dataArray{$id}.length;
+        } else {
+            start = ind;
+            end = ind + 1;
+        }
+        if (dataArray{$id}.length == 0) {
+            $('#upload-button-{$id}').hide();
+            $('#new-files-{$id}').hide();
+        } else if (dataArray{$id}.length == 1) {
+            $('#upload-button-{$id} span').html(\"1 file to upload\");
+        } else {
+            $('#upload-button-{$id} span').html(dataArray{$id}.length + \" files to upload\");
+        }
+        console.log(dataArray{$id});
+        for (i = start; i < end; i++) {
+            if ($('#preview-block-{$id} > .image').length <= maxFiles) {
+                $('#preview-block-{$id}').append(
+                    '<div id=\"img-{$id}-' + i + '\" class=\"preview-image\" ' +
+                    'title=\"'+ dataArray{$id}[i].name +'\"'+
+                    'style=\"background: url(' + dataArray{$id}[i].value + '); background-size: contain;\"> ' +
+                    '<a href=\"#\" id=\"drop-{$id}-' + i + '\" class=\"drop-button\">' +
+                    '<i class=\"fa fa-remove\"></i>' +
+                    '</a>' +
+                    '</div>');
+            }
+        }
+        return false;
+    }
+
+    $('#preview-block-{$id}').on('click', \"a[id^='drop']\", function (e) {
+        e.preventDefault();
+        var elid = $(this).attr('id');
+        var temp = [];
+        temp = elid.split('-');
+        dataArray{$id}.splice(temp[2], 1);
+        $('#preview-block-{$id} > .preview-image').remove();
+        addImage(-1);
+        prepareToUpload();
+    });
+
+    $(\"#preview-block-{$id}\").on(\"click\", \"a[id^='delete']\", function (e) {
+        e.preventDefault();
+        var elid = $(this).attr('id');
+        var temp = [];
+        temp = elid.split('-');
+        $(this).remove();
+        $('#img-{$id}-' + temp[2]).fadeTo(500, 0.2);
+        var idToDelete = [];
+        idToDelete.push(temp[2]);
+        var old = [];
+        if (old = $('#files-to-delete-{$id}').val()) {
+            idToDelete.push(old);
+        }
+        $('#files-to-delete-{$id}').val(Array.from(idToDelete));
+    });
+
+    function restartFiles() {
+
+        allFiles{$id} = new DataTransfer();
+        dataArray{$id}.length = 0;
+        prepareToUpload();
+        $('#upload-button-{$id}').hide();
+        $('#preview-block-{$id} > .preview-image').remove();
+        $('#new-files-{$id}').hide();
+        return false;
+    }
+
+    $('#new-files-{$id}').hide();
+
+    $('.delete-{$id}').click(restartFiles);
+");
 FileInputAsset::register($this);
 $modelName = explode("\\", $model::className());
 $modelName = end($modelName);
 $inputName = $modelName . '[' . str_replace('[]', '', $attribute) . '][]';
-//$inputNameToDelete = $modelName . '[toDelete]';
 $inputNameToDelete = 'toDelete';
 ?>
 <div id="<?=$id?>">
-    <input type="hidden" id="files-to-delete" name="<?= $inputNameToDelete ?>"/>
+    <input type="hidden" id="files-to-delete-<?= $id ?>" name="<?= $inputNameToDelete ?>"/>
 
-    <div id="uploaded-holder">
-        <div id="preview-block">
+    <div id="uploaded-holder-<?= $id ?>">
+        <div id="preview-block-<?= $id ?>">
             <?php foreach ($model->attachmentFiles as $file) : ?>
-                <div id="img-<?= $file->id ?>" class="attachment-image"
-                     style="background: url(<?= Url::base(true) . Yii::$app->storage->getFile($file->name) ?>);
+                <div id="img-<?= $id ?>-<?= $file->id ?>" class="attachment-image" title="<?=$file->native_name?>"
+                     style="background: url(<?= Url::base(true) . Yii::$app->storage->getImgPreview($file->name) ?>);
                              background-size: contain;">
-                    <a href="#" id="delete-<?= $file->id ?>" class="delete-button">
+                    <a href="#" id="delete-<?= $id ?>-<?= $file->id ?>" class="delete-button">
                         <i class="fa fa-trash"></i>
                     </a>
                 </div>
             <?php endforeach; ?>
         </div>
     </div>
-    <div id="new-files">
-        <div id="upload-button">
+    <div id="new-files-<?= $id ?>">
+        <div id="upload-button-<?= $id ?>">
             <span>no files</span>
-            <a href="#" class="delete">Clear</a>
+            <a href="#" class="delete-<?= $id ?>">Clear</a>
         </div>
     </div>
 
 
-    <input type="file" id="uploadbtn<?= $id ?>" name="<?= $inputName ?>" multiple/>
+    <input type="file" id="uploadbtn-<?= $id ?>" name="<?= $inputName ?>" multiple/>
 </div>

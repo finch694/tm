@@ -51,7 +51,11 @@ class Storage extends Component implements StorageInterface
     protected function getFilename(UploadedFile $file)
     {
         $hash = sha1_file($file->tempName);
-        return $hash . time() . '.' . $file->extension;
+        $name = $hash . time();
+        if ($file->extension !== '') {
+            $name .= '.' . $file->extension;
+        }
+        return $name;
     }
 
     /**
@@ -72,6 +76,14 @@ class Storage extends Component implements StorageInterface
         return Yii::$app->params['storageUri'] . $filename;
     }
 
+    public function getImgPreview(string $filename)
+    {
+        if (!preg_match("/\.(jpe?g|gif|png|tiff)$/i", $filename)) {
+            $filename = 'template.png';
+        }
+        return $this->getFile($filename);
+    }
+
     public function deleteFile(string $filename)
     {
         return unlink($this->getStoragePath() . $filename);
@@ -79,6 +91,6 @@ class Storage extends Component implements StorageInterface
 
     public function getFileLocation(string $filename)
     {
-        return $this->getStoragePath().$filename;
+        return $this->getStoragePath() . $filename;
     }
 }

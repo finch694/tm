@@ -16,9 +16,6 @@ class FileInputAsset extends AssetBundle
     public $css = [
         'fileInput.css',
     ];
-    public $js = [
-        'fileInput.js',
-    ];
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',

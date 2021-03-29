@@ -87,8 +87,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                         Html::tag('i', '', ['class' => 'glyphicon glyphicon-save']),
                                         "/task/download?id=" . $model->attachmentFiles[$i]['id'], ['data-pjax' => 0]),
                                     ['style' => 'background:url(' .
-                                        Url::base(true) . Yii::$app->storage->getFile($model->attachmentFiles[$i]['name']) . ');
-                                    ', 'class' => 'img-min'
+                                        Url::base(true) . Yii::$app->storage->getImgPreview($model->attachmentFiles[$i]['name']) . ');
+                                    ', 'class' => 'img-min',
+                                        'title'=>$model->attachmentFiles[$i]['native_name'],
                                     ]);
                         }
                         return $content;

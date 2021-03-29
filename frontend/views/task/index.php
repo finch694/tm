@@ -103,8 +103,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <!-- Attachment -->
                                 <div class="clearfix bg-info">
                                     <?php foreach ($model->attachmentFiles as $file) : ?>
-                                        <div class="container-img file" data-key="<?= $model->id ?>"
-                                             style="background: url('<?= Url::base(true). Yii::$app->storage->getFile($file->name) ?>');">
+                                        <div class="container-img file" title="<?=$file->native_name?>" data-key="<?= $model->id ?>"
+                                             style="background: url('<?= Url::base(true). Yii::$app->storage->getImgPreview($file->name) ?>');">
                                             <a class="download" href="/task/download?id=<?= $file->id ?>" data-pjax="0"><i
                                                         class="glyphicon glyphicon-save"></i> </a>
                                         </div>
