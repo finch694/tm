@@ -55,7 +55,7 @@ class SignupForm extends Model
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
-        if( $user->save() && $this->sendEmail($user)){
+        if( $user->save()){             //&& $this->sendEmail($user)
             $auth = Yii::$app->authManager;
             $defaultRole = $auth->getRole('user');
             $auth->assign($defaultRole,$user->id);
