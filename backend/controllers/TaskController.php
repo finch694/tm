@@ -239,7 +239,12 @@ class TaskController extends Controller
                     $this->saveFiles($files, $model->id);
                 }
                 $this->log($view, $model->title, $model->id);
+//                if ($view === 'modal-change') {
+//                var_dump(Yii::$app->user->returnUrl);exit();
+//                    return $this->redirect('/admin/'.Yii::$app->user->returnUrl ?: Yii::$app->homeUrl);
+//                } else {
                 return $this->redirect(Yii::$app->user->returnUrl ?: Yii::$app->homeUrl);
+//                }
             }
         }
         if ($view === 'modal-change') {
@@ -271,7 +276,8 @@ class TaskController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public
+    function actionDelete($id)
     {
         if ($model = $this->findModel($id)) {
             $model->softDelete();
@@ -280,7 +286,8 @@ class TaskController extends Controller
         return $this->redirect(Yii::$app->request->referrer);
     }
 
-    public function actionRecover($id)
+    public
+    function actionRecover($id)
     {
         if ($model = $this->findModel($id)) {
             $model->recover();
@@ -289,15 +296,19 @@ class TaskController extends Controller
         return $this->redirect(Yii::$app->request->referrer);
     }
 
-    public function actionModal($id, $mod)
+    public
+    function actionModal($id, $mod)
     {
+//        Yii::$app->user->returnUrl = Yii::$app->request->url;
+
         $model = $this->findModel($id);
 
         return $this->taskCreateOrUpdate($model, 'modal-change', $mod);
 
     }
 
-    public function actionModalImage($id)
+    public
+    function actionModalImage($id)
     {
         $model = $this->findModel($id);
         return $this->renderAjax('modal-image', [
@@ -312,7 +323,8 @@ class TaskController extends Controller
      * @return Task the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected
+    function findModel($id)
     {
         if (($model = Task::findOne($id)) !== null) {
             return $model;
@@ -320,7 +332,8 @@ class TaskController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    private function deleteFiles(string $idsToDelete)
+    private
+    function deleteFiles(string $idsToDelete)
     {
         $ids = explode(',', $idsToDelete);
         foreach ($ids as $idFile) {
@@ -332,7 +345,8 @@ class TaskController extends Controller
         return true;
     }
 
-    private function saveFiles(array $files, $taskId)
+    private
+    function saveFiles(array $files, $taskId)
     {
         foreach ($files as $file) {
             $modelFile = new AttachmentFiles();
@@ -343,15 +357,17 @@ class TaskController extends Controller
         }
     }
 
-    private function log(string $action, string $title, int $modelId)
+    private
+    function log(string $action, string $title, int $modelId)
     {
         Yii::info($action . ' task "' . $title . '"(id-' . $modelId . ')', 'log');
     }
 
-    public function actionDownload($id)
+    public
+    function actionDownload($id)
     {
         $file = AttachmentFiles::findOne($id);
-        $path =  Yii::$app->storage->getFileLocation($file->name);
+        $path = Yii::$app->storage->getFileLocation($file->name);
         if (file_exists($path)) {
             return Yii::$app->response->sendFile($path, $file->native_name)->send();
         }

@@ -16,7 +16,8 @@ $(function () {
             } else if (mod.indexOf('manager') + 1) {
                 mod = 'manager';
             }
-            $('#modal-change-sm').modal('show').find('.modal-body').load('/task/modal?id=' + data.key + '&mod=' + mod);
+            let sub =  $(location).attr('href').indexOf('admin') + 1 ? '/admin' : '';
+            $('#modal-change-sm').modal('show').find('.modal-body').load(sub + '/task/modal?id=' + data.key + '&mod=' + mod);
         }
     );
     $(document).on('click', '.file', function () {
@@ -26,8 +27,9 @@ $(function () {
             } else {
                 data = $(this).data();
             }
+            let sub = $(location).attr('href').indexOf('admin') + 1 ? '/admin' : '';
 
-            $('#modal-change-md').modal('show').find('.modal-body').load('/task/modal-image?id=' + data.key);
+            $('#modal-change-md').modal('show').find('.modal-body').load(sub + '/task/modal-image?id=' + data.key);
         }
     );
     $(document).on('click', '.file a', function (e) {

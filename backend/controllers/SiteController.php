@@ -82,7 +82,7 @@ class SiteController extends Controller
             if (!Yii::$app->user->can('manager')){
                 return $this->actionLogout();
             }
-            Yii::info('login', 'log');
+            Yii::info('login to admin', 'log');
             return $this->goBack();
         } else {
             $model->password = '';
@@ -99,7 +99,7 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::info('logout', 'log');
+        Yii::info('logout from admin', 'log');
         Yii::$app->log->getLogger()->flush(true);
 
         Yii::$app->user->logout();

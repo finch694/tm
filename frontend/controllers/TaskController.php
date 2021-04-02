@@ -180,8 +180,15 @@ class TaskController extends Controller
      */
     public function actionView($id)
     {
+        $statusList = TaskStatus::find()
+            ->select(['text', 'id', 'finally', 'color'])
+            ->andWhere(['deletedAt' => null])
+            ->indexBy('id')
+            ->asArray()
+            ->all();
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'statusList' => $statusList,
         ]);
     }
 

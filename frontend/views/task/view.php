@@ -7,6 +7,7 @@ use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Task */
+/* @var array $statusList */
 
 $this->title = '';
 $this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => [Yii::$app->user->returnUrl ?: 'index']];
@@ -60,7 +61,44 @@ $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
                 </div>
             </div>
             <div class="box-footer box-comments <?= $mainBG ?>">
-                <div class=" pull-left label btn-sm bg-gray-active <?= $btnClass ?> user" data-key="<?= $model->id ?>">
+                <?php if (Yii::$app->user->can('manager') || !$model->status->finally && $model->user->id === Yii::$app->user->getId()) : ?>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-info btn-flat btn-xs">Change status</button>
+                        <button type="button" class="btn btn-info btn-flat btn-xs dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <?php foreach ($statusList as $status)
+                                if ($model->status_id !== $status['id'] && !$status['finally'])
+                                    echo "<li style='background-color:" . $status['color'] .
+                                        " '><a href='/task/change-status?id=" . $model->id .
+                                        "&status=" . $status['id'] . "'>" . $status['text'] . "</a></li>";
+                            ?>
+                        </ul>
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-success btn-flat btn-xs">Finish task</button>
+                        <button type="button" class="btn btn-success btn-flat btn-xs dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-expanded="false">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <?php foreach ($statusList as $status)
+                                if ($model->status_id !== $status['id'] && $status['finally'])
+                                    echo "<li style='background-color:" . $status['color'] .
+                                        " '><a href='/task/change-status?id=" . $model->id .
+                                        "&status=" . $status['id'] . "'>" . $status['text'] . "</a></li>";
+                            ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+                <div class="label btn-sm bg-gray-active <?= $btnClass ?> user" data-key="<?= $model->id ?>">
                     Executor: <?= ($model->user) ? $model->user->username : 'not set' ?>
                 </div>
                 <div class="pull-right">

@@ -110,8 +110,8 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        $messageLog=  Yii::$app->user->getId().'-id logout';
-        Yii::info($messageLog,'log');
+        Yii::info('logout', 'log');
+        Yii::$app->log->getLogger()->flush(true);
         Yii::$app->user->logout();
 
         return $this->goHome();

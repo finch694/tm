@@ -65,7 +65,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col-md-6">
                     <div class="box box-widget  <?= $mainBG ?> collapsed-box">
                         <div class="box-header with-border">
-                            <!-- /.user-block -->
 
                             <div class="box-tools left">
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse">
@@ -91,31 +90,25 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </div>
 
                             </div>
-                            <!-- /.box-tools -->
                         </div>
-                        <!-- /.box-header -->
                         <div class="box-body" style="display: none;">
-                            <!-- post text -->
                             <div class="box-body bg-gray-active ">
                                 <div class=""> <?= $model->getTextWithLinks() ?></div>
                             </div>
                             <?php if ($model->attachmentFiles) : ?>
-                                <!-- Attachment -->
                                 <div class="clearfix bg-info">
                                     <?php foreach ($model->attachmentFiles as $file) : ?>
-                                        <div class="container-img file" title="<?=$file->native_name?>" data-key="<?= $model->id ?>"
-                                             style="background: url('<?= Url::base(true). Yii::$app->storage->getImgPreview($file->name) ?>');">
+                                        <div class="container-img file" title="<?= $file->native_name ?>"
+                                             data-key="<?= $model->id ?>"
+                                             style="background: url('<?= Url::base(true) . Yii::$app->storage->getImgPreview($file->name) ?>');">
                                             <a class="download" href="/task/download?id=<?= $file->id ?>" data-pjax="0"><i
                                                         class="glyphicon glyphicon-save"></i> </a>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
-                                <!-- /.attachment-block -->
                             <?php endif; ?>
-                            <!-- Social sharing buttons -->
 
                         </div>
-                        <!-- /.box-body -->
                         <div class="box-tools" style="background-color: <?= $model->status->color ?>">
                             <div class="fc-header-left <?= $btnClass ?> status btn-xs text-black"
                                  data-key="<?= $model->id ?>">
