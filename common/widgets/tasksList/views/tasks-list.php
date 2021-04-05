@@ -4,6 +4,8 @@
  * @var $taskList array
  */
 
+use yii\helpers\Html;
+
 $count = count($taskList);
 ?>
 <li class="dropdown tasks-menu">
@@ -19,20 +21,16 @@ $count = count($taskList);
             <ul class="menu">
                 <?php foreach ($taskList as $task): ?>
                     <li>
-                        <a href="/task/view?id=<?= $task['id'] ?>">
-                            <h3>
-                                <?= $task['title'] ?>
-                                <small class="pull-right"><?= $task['priority']['name'] ?></small>
-                            </h3>
-                            <div class="progress xs" style="background-color: <?= $task['status']['color'] ?>">
-                            </div>
-                        </a>
+                        <?= Html::a("<h3>{$task['title']} 
+                            <small class='pull-right'> {$task['priority']['name']}</small></h3>
+                            <div class='progress xs' style='background-color: {$task["status"]["color"]}'></div>",
+                            ['/task/view?id='.$task["id"]]) ?>
                     </li>
                 <?php endforeach; ?>
             </ul>
         </li>
         <li class="footer">
-            <a href="/task/my-tasks">View all your tasks</a>
+            <?= Html::a('View all your tasks', ['task/my-tasks']) ?>
         </li>
     </ul>
 </li>

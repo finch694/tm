@@ -5,6 +5,8 @@
  * @var $totalCount int
  */
 
+use yii\helpers\Html;
+
 ?>
 <h3 class="control-sidebar-heading">Tasks Statuses</h3>
 <ul class='control-sidebar-menu' style="overflow: auto; max-height: 500px">
@@ -22,4 +24,4 @@
         </li>
     <?php endforeach; ?>
 </ul>
-<a href="/task" class="control-sidebar-subheading label">Total tasks: <?=$totalCount?></a>
+<?= Html::a('Total tasks: '.$totalCount,['/task'],['class'=>"control-sidebar-subheading label"])?>

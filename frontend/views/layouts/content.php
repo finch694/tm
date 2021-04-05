@@ -6,6 +6,7 @@ use yii\helpers\Html;
 use yii\helpers\Inflector;
 use yii\widgets\Breadcrumbs;
 use dmstr\widgets\Alert;
+
 /* @var $content string */
 ?>
 <div class="content-wrapper">
@@ -71,5 +72,4 @@ use dmstr\widgets\Alert;
     </div>
 </aside>
 <div class='control-sidebar-bg tab-pane'>
-
 </div>

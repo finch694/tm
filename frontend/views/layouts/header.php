@@ -29,12 +29,16 @@ if (isset($user)) {
         <div class="navbar-custom-menu">
 
             <ul class="nav navbar-nav">
-                <?= TasksList::widget() ?>
-
+                <?php if (!Yii::$app->user->isGuest) {
+                    echo TasksList::widget();
+                }
+                ?>
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <span class="hidden-xs"><?= $username ?></span>
                     </a>
+                    <?php if (!Yii::$app->user->isGuest) : ?>
+
                     <ul class="dropdown-menu bg-light-blue-gradient">
                         <li class="text-center text-white">
                             <p class="margin"><?= $username ?></p>
@@ -44,18 +48,24 @@ if (isset($user)) {
                             <div class="pull-left">
                             </div>
                             <div class="pull-right">
-                                <?= Html::a(
-                                    'Logout',
-                                    ['/site/logout'],
-                                    ['data-method' => 'post', 'class' => 'btn btn-default btn-flat']
-                                ) ?>
+                                <?php if (!Yii::$app->user->isGuest) {
+                                    echo Html::a(
+                                        'Logout',
+                                        ['/site/logout'],
+                                        ['data-method' => 'post', 'class' => 'btn btn-default btn-flat']
+                                    );
+                                } ?>
                             </div>
                         </li>
                     </ul>
+                    <?php endif; ?>
+
                 </li>
-                <li>
-                    <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-                </li>
+                <?php if (!Yii::$app->user->isGuest) : ?>
+                    <li>
+                        <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                    </li>
+                <?php endif; ?>
             </ul>
         </div>
     </nav>
