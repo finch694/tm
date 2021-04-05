@@ -4,7 +4,7 @@
 namespace common\widgets\tasksSummary;
 
 
-use common\models\TaskStatus;
+use common\models\Task;
 use yii\base\Widget;
 
 class TasksSummary extends Widget
@@ -12,17 +12,16 @@ class TasksSummary extends Widget
     public function run()
     {
 
-        $tasksSummary = TaskStatus::find()
-            ->select(['task_status.id', 'task_status.text', 'task_status.color', 'count(task_status.id)'])
-            ->joinWith('tasks')
+        $tasksSummary = Task::find()
+            ->select(['status_id', 'count(task.id)'])
+            ->joinWith('status')
             ->andWhere(['task_status.deletedAt' => null])
             ->andWhere(['task.deletedAt' => null])
-            ->groupBy('task_status.id')
-            ->orderBy(['task_status.finally' => SORT_DESC])
+            ->groupBy('task.status_id')
             ->asArray()
             ->all();
-        $totalCount = TaskStatus::find()
-            ->joinWith('tasks')
+        $totalCount = Task::find()
+            ->joinWith('status')
             ->andWhere(['task_status.deletedAt' => null])
             ->andWhere(['task.deletedAt' => null])
             ->count();

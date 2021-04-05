@@ -14,13 +14,13 @@ use yii\helpers\Html;
         <li>
             <a>
                 <h4 class="control-sidebar-subheading">
-                    <?= $info['text'] ?>
+                    <?= $info['status']['text'] . ' (' . $info['count'].')' ?>
                     <span class="label text-black pull-right"
-                          style="background-color: <?= $info['color'] ?>"><?= $totalCount ? round($info['count'] / $totalCount * 100, 2) : '0' ?>%</span>
+                          style="background-color: <?= $info['status']['color'] ?>"><?= $totalCount ? round($info['count'] / $totalCount * 100, 2) : '0' ?>%</span>
                 </h4>
                 <div class="progress progress-xxs">
                     <div class="progress-bar"
-                         style="width: <?= $info['count'] / $totalCount * 100 ?>%; background-color: <?= $info['color'] ?>"></div>
+                         style="width: <?= $info['count'] / $totalCount * 100 ?>%; background-color: <?= $info['status']['color'] ?>"></div>
                 </div>
             </a>
         </li>
