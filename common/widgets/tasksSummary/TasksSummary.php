@@ -4,6 +4,7 @@
 namespace common\widgets\tasksSummary;
 
 
+use common\models\Task;
 use common\models\TaskStatus;
 use yii\base\Widget;
 
@@ -21,8 +22,8 @@ class TasksSummary extends Widget
             ->orderBy(['task_status.finally' => SORT_DESC])
             ->asArray()
             ->all();
-        $totalCount = TaskStatus::find()
-            ->joinWith('tasks')
+        $totalCount = Task::find()
+            ->joinWith('status')
             ->andWhere(['task_status.deletedAt' => null])
             ->andWhere(['task.deletedAt' => null])
             ->count();
