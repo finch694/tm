@@ -16,7 +16,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
     <p>
-        <?= Html::a('Create Task Priority', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php if (Yii::$app->user->can('admin')) {
+            echo Html::a('Create Task Priority', ['create'], ['class' => 'btn btn-success']);
+        }?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -36,6 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view} {update} {change-active}',
+                'visible' => Yii::$app->user->can('admin'),
                 'buttons' => [
                     'change-active' => function ($url, $model) {
                         $icon = $model->active ? 'glyphicon-remove' : 'glyphicon-ok';

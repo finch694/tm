@@ -25,7 +25,12 @@ class TaskStatusController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['update', 'create', 'delete', 'index', 'view'],
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['manager'],
+                    ],
+                    [
+                        'actions' => ['update', 'create', 'delete', 'view'],
                         'allow' => true,
                         'roles' => ['admin'],
                     ],

@@ -50,7 +50,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'status.text',
                 'contentOptions' =>
                     function ($model): array {
-                        return ['style' => 'background:' . $model->status->color, 'class' => 'mod status'];
+                        $options = ['style' => 'background:' . $model->status->color];
+                        if (Yii::$app->user->can('admin')
+                            || $model->manager_id === Yii::$app->user->getId()
+                            || $model->user_id === Yii::$app->user->getId()
+                        ) {
+                            $options['class'] = 'mod status';
+                        }
+                        return $options;
                     },
             ],
             [
@@ -58,7 +65,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => 'Priority',
                 'filter' => $priorityList,
                 'value' => 'priority.name',
-                'contentOptions' => ['class' => 'mod priority']
+                'contentOptions' => function ($model): array {
+                    $options = [];
+                    if (Yii::$app->user->can('admin') || $model->manager_id == Yii::$app->user->getId()) {
+                        $options['class'] = 'mod priority';
+                    }
+                    return $options;
+                },
 
             ],
             [
@@ -89,7 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ['style' => 'background:url(' .
                                         Url::base(true) . Yii::$app->storage->getImgPreview($model->attachmentFiles[$i]['name']) . ');
                                     ', 'class' => 'img-min',
-                                        'title'=>$model->attachmentFiles[$i]['native_name'],
+                                        'title' => $model->attachmentFiles[$i]['native_name'],
                                     ]);
                         }
                         return $content;
@@ -101,7 +114,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'userName',
                 'label' => 'Executor',
                 'value' => 'user.username',
-                'contentOptions' => ['class' => 'mod user']
+                'contentOptions' => function ($model): array {
+                    $options = [];
+                    if (Yii::$app->user->can('admin') || $model->manager_id == Yii::$app->user->getId()) {
+                        $options['class'] = 'mod user';
+                    }
+                    return $options;
+                },
             ],
             [
                 'attribute' => 'managerName',
@@ -155,7 +174,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 'visibleButtons' => [
                     'delete' => function ($model) {
-                        return $model->deletedAt == null;
+                        return $model->deletedAt == null && (Yii::$app->user->can('admin') || ($model->manager_id == Yii::$app->user->getId() && $model->status->finally));
+                    },
+                    'update' => function ($model) {
+                        return Yii::$app->user->can('admin') || $model->manager_id === Yii::$app->user->getId();
                     },
                     'recover' => function ($model) {
                         return $model->deletedAt != null && Yii::$app->user->can('admin');

@@ -43,8 +43,6 @@ class TaskStatusSearch extends TaskStatus
     {
         $query = TaskStatus::find();
 
-        // add conditions that should always apply here
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -52,22 +50,21 @@ class TaskStatusSearch extends TaskStatus
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
-        // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
             'finally' => $this->finally,
-//            'deletedAt' => $this->deletedAt,
         ]);
 
         $query->andFilterWhere(['ilike', 'text', $this->text])
             ->andFilterWhere(['ilike', 'color', $this->color]);
-        if ($this->deletedAt){
-            $query->andFilterWhere([ $this->deletedAt,'deletedAt',new Expression('null')]);
+        if ($this->deletedAt==='active'){
+            $query->andFilterWhere([ 'is','deletedAt',new Expression('null')]);
+        }
+        if ($this->deletedAt==='deleted'){
+            $query->andFilterWhere([ 'is not','deletedAt',new Expression('null')]);
         }
 
         return $dataProvider;

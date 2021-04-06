@@ -42,7 +42,6 @@ YiiAsset::register($this);
                 'label' => 'Role',
                 'value' => $model->getRoleDescriptions(),
             ],
-            'password_reset_token',
             'email:email',
             [
                 'attribute' => 'status',

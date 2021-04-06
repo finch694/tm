@@ -10,7 +10,7 @@
 
 
 $this->title = 'Create Task';
-$this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => Yii::$app->user->returnUrl ?: 'index'];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="task-create">

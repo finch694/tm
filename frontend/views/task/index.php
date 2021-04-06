@@ -17,10 +17,8 @@ use yii\widgets\LinkPager;
 
 ModalAsset::register($this);
 ImageAsset::register($this);
-$btnClass = Yii::$app->user->can('manager') ? 'btn mod' : '';
 $this->title = $title;
 $this->params['breadcrumbs'][] = $this->title;
-//var_dump($statusList);exit();
 ?>
 <div class="task-index">
 
@@ -33,9 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
                 </button>
             </div>
-            <!-- /.box-tools -->
         </div>
-        <!-- /.box-header -->
         <div class="box-body" style="display: none;">
             <?php echo $this->render('_search', [
                 'model' => $searchModel,
@@ -45,7 +41,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ]); ?>
         </div>
 
-        <!-- /.box-body -->
     </div>
     <?php
     echo LinkPager::widget([
@@ -61,6 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="card-columns">
             <?php foreach ($dataProvider->getModels() as $model):
                 $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
+                $btnClass = Yii::$app->user->can('admin') || $model->manager_id == Yii::$app->user->getId() ? 'btn mod' : '';
                 ?>
                 <div class="col-md-6">
                     <div class="box box-widget  <?= $mainBG ?> collapsed-box">
@@ -116,7 +112,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             </div>
                         </div>
                         <div class="box-footer box-comments <?= $mainBG ?>" style="display: none;">
-                            <?php if (Yii::$app->user->can('manager') || !$model->status->finally && $model->user->id === Yii::$app->user->getId()) : ?>
+                            <?php if (!$model->status->finally && $model->user_id === Yii::$app->user->getId()) : ?>
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-info btn-flat btn-xs">Change status</button>
                                     <button type="button" class="btn btn-info btn-flat btn-xs dropdown-toggle"
@@ -154,14 +150,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                 </div>
                             <?php endif; ?>
                             <?php if (Yii::$app->user->can('manager') || !$model->user) : ?>
-                                <a class="<?= $btnClass ?> user btn-sm"
+                                <a class="<?= $btnClass ?> user btn-xs"
                                    data-key="<?= $model->id ?>">
                                     Executor: <?= ($model->user) ? $model->user->username : 'not set' ?>
                                 </a>
                             <?php endif; ?>
                             <div class="pull-right">
                                 <?php
-                                if (Yii::$app->user->can('admin')) {
+                                if (Yii::$app->user->can('admin')or
+                                    (
+                                        Yii::$app->user->can('manager')
+                                        && !$model->deletedAt
+                                        && $model->manager_id === Yii::$app->user->getId()
+                                    )) {
                                     echo Html::a('<i class="fa fa-cogs"></i>', ['update', 'id' => $model->id], [
                                         'class' => 'btn btn-primary btn-flat margin-r-5 btn-xs',
                                         'title' => 'update'
@@ -175,7 +176,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     (
                                         Yii::$app->user->can('manager')
                                         && !$model->deletedAt
-                                        && $model->manager->id === Yii::$app->user->getId()
+                                        && $model->manager_id === Yii::$app->user->getId()
+                                        && $model->status->finally
                                     )
                                 ) {
                                     echo Html::a('<i class="fa fa-trash"></i>', ['delete', 'id' => $model->id], [

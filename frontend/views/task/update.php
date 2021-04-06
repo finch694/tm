@@ -9,7 +9,7 @@
 /* @var array $priorityList */
 
 $this->title = 'Update Task: ' . $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => Yii::$app->user->returnUrl ?: 'index'];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>

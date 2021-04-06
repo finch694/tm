@@ -69,6 +69,9 @@ class TaskController extends Controller
         return $this->index($params, $title);
     }
 
+    /**
+     * @return string
+     */
     public function actionManagedTasks()
     {
         $params['TaskSearch'] = ['manager_id' => Yii::$app->user->id, 'deletedAt' => 0];
@@ -76,6 +79,9 @@ class TaskController extends Controller
         return $this->index($params, $title);
     }
 
+    /**
+     * @return string
+     */
     public function actionCreatedTasks()
     {
         $params['TaskSearch'] = ['creator_id' => Yii::$app->user->id, 'deletedAt' => 0];
@@ -83,6 +89,9 @@ class TaskController extends Controller
         return $this->index($params, $title);
     }
 
+    /**
+     * @return string
+     */
     public function actionUnassignedTasks()
     {
         $params['TaskSearch'] = ['user_id' => 0, 'deletedAt' => 0];
@@ -90,6 +99,9 @@ class TaskController extends Controller
         return $this->index($params, $title);
     }
 
+    /**
+     * @return string
+     */
     public function actionMyTasks()
     {
         $params['TaskSearch'] = ['user_id' => Yii::$app->user->id, 'deletedAt' => 0];
@@ -97,6 +109,9 @@ class TaskController extends Controller
         return $this->index($params, $title);
     }
 
+    /**
+     * @return string
+     */
     public function actionMyActiveTasks()
     {
         $params['TaskSearch'] = ['user_id' => Yii::$app->user->id, 'deletedAt' => 0, 'statusFinally' => false];
@@ -104,6 +119,9 @@ class TaskController extends Controller
         return $this->index($params, $title);
     }
 
+    /**
+     * @return string
+     */
     public function actionMyClosedTasks()
     {
         $params['TaskSearch'] = ['user_id' => Yii::$app->user->id, 'deletedAt' => 0, 'statusFinally' => true];
@@ -111,6 +129,9 @@ class TaskController extends Controller
         return $this->index($params, $title);
     }
 
+    /**
+     * @return string
+     */
     public function actionDeletedTasks()
     {
         $params['TaskSearch'] = ['deletedAt' => 1];
@@ -118,6 +139,11 @@ class TaskController extends Controller
         return $this->index($params, $title);
     }
 
+    /**
+     * @param $params
+     * @param $title
+     * @return string
+     */
     public function index($params, $title)
     {
         $searchModel = new TaskSearch();
@@ -273,8 +299,7 @@ class TaskController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public
-    function actionDelete($id)
+    public function actionDelete($id)
     {
         if ($model = $this->findModel($id)) {
             $model->softDelete();
@@ -283,8 +308,12 @@ class TaskController extends Controller
         return $this->redirect(Yii::$app->request->referrer);
     }
 
-    public
-    function actionRecover($id)
+    /**
+     * @param $id
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
+     */
+    public function actionRecover($id)
     {
         if ($model = $this->findModel($id)) {
             $model->recover();
@@ -293,16 +322,29 @@ class TaskController extends Controller
         return $this->redirect(Yii::$app->request->referrer);
     }
 
-    public
-    function actionModal($id, $mod)
+    /**
+     * @param $id
+     * @param $mod
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     */
+    public function actionModal($id, $mod)
     {
         $model = $this->findModel($id);
-
-        return $this->taskCreateOrUpdate($model, 'modal-change', $mod);
+        if (Yii::$app->user->can('admin') || $model->manager_id === Yii::$app->user->getId()
+            || ($model->user_id === Yii::$app->user->getId() && $mod==='status')) {
+            return $this->taskCreateOrUpdate($model, 'modal-change', $mod);
+        } else {
+            return 'error';
+        }
     }
 
-    public
-    function actionModalImage($id)
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionModalImage($id)
     {
         $model = $this->findModel($id);
         return $this->renderAjax('modal-image', [
@@ -317,8 +359,7 @@ class TaskController extends Controller
      * @return Task the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected
-    function findModel($id)
+    protected function findModel($id)
     {
         if (($model = Task::findOne($id)) !== null) {
             return $model;
@@ -326,8 +367,13 @@ class TaskController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    private
-    function deleteFiles(string $idsToDelete)
+    /**
+     * @param string $idsToDelete
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    private function deleteFiles(string $idsToDelete)
     {
         $ids = explode(',', $idsToDelete);
         foreach ($ids as $idFile) {
@@ -339,8 +385,11 @@ class TaskController extends Controller
         return true;
     }
 
-    private
-    function saveFiles(array $files, $taskId)
+    /**
+     * @param array $files
+     * @param $taskId
+     */
+    private function saveFiles(array $files, $taskId)
     {
         foreach ($files as $file) {
             $modelFile = new AttachmentFiles();
@@ -351,14 +400,20 @@ class TaskController extends Controller
         }
     }
 
-    private
-    function log(string $action, string $title, int $modelId)
+    /**
+     * @param string $action
+     * @param string $title
+     * @param int $modelId
+     */
+    private function log(string $action, string $title, int $modelId)
     {
         Yii::info($action . ' task "' . $title . '"(id-' . $modelId . ')', 'log');
     }
 
-    public
-    function actionDownload($id)
+    /**
+     * @param $id
+     */
+    public function actionDownload($id)
     {
         $file = AttachmentFiles::findOne($id);
         $path = Yii::$app->storage->getFileLocation($file->name);

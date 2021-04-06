@@ -9,18 +9,17 @@ use yii\helpers\Url;
 /* @var $model common\models\Task */
 
 $this->title = '';
-$this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => [Yii::$app->user->returnUrl ?: 'index']];
+$this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => Yii::$app->user->returnUrl ?: 'index'];
 $this->params['breadcrumbs'][] = $model->title;
 ImageAsset::register($this);
 ModalAsset::register($this);
-$btnClass = Yii::$app->user->can('manager') ? 'btn mod' : '';
+$btnClass = Yii::$app->user->can('admin') || $model->manager_id == Yii::$app->user->getId() ? 'btn mod' : '';
 $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
 ?>
 <div class="task-view">
     <div class="container">
         <div class="box box-widget <?= $mainBG ?>">
             <div class="box-header with-border">
-                <!-- /.user-block -->
                 <div class="box-tools label bg-orange <?= $btnClass ?> priority" data-key="<?= $model->id ?>">
                     Priority: <?= $model->priority->name ?></div>
 
@@ -44,9 +43,10 @@ $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
                 <?php if ($model->attachmentFiles) : ?>
                     <div class="clearfix bg-info">
                         <?php foreach ($model->attachmentFiles as $file) : ?>
-                            <div class="container-img file" title="<?=$file->native_name?>" data-key="<?= $model->id ?>"
+                            <div class="container-img file" title="<?= $file->native_name ?>"
+                                 data-key="<?= $model->id ?>"
                                  style="background: url('<?= Url::base(true) . Yii::$app->storage->getImgPreview($file->name) ?>');">
-                                <?= Html::a('<i class="glyphicon glyphicon-save"></i>',['/task/download?id='.$file->id],['data-pjax' => 0])?>
+                                <?= Html::a('<i class="glyphicon glyphicon-save"></i>', ['/task/download?id=' . $file->id], ['data-pjax' => 0]) ?>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -54,12 +54,12 @@ $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
 
             </div>
             <div class="box-tools" style="background-color: <?= $model->status->color ?>">
-                <div class="fc-header-left <?= $btnClass ?> status btn-xs text-black" data-key="<?= $model->id ?>">
+                <div class="fc-header-left <?= $btnClass ?> <?php if ($model->user_id===Yii::$app->user->getId()) echo 'btn mod'?> status btn-xs text-black" data-key="<?= $model->id ?>">
                     <b> Status: <?= $model->status->text ?></b>
                 </div>
             </div>
             <div class="box-footer box-comments <?= $mainBG ?>">
-                <div class=" pull-left label btn-sm bg-gray-active <?= $btnClass ?> user" data-key="<?= $model->id ?>">
+                <div class=" pull-left label btn-sm bg-gray-active <?= $btnClass ?> user" data-key="<?= $model->id?>">
                     Executor: <?= ($model->user) ? $model->user->username : 'not set' ?>
                 </div>
                 <div class="pull-right">
@@ -78,7 +78,8 @@ $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
                         (
                             Yii::$app->user->can('manager')
                             && !$model->deletedAt
-                            && $model->manager->id === Yii::$app->user->getId()
+                            && $model->manager_id === Yii::$app->user->getId()
+                            && $model->status->finally
                         )
                     ) {
                         echo Html::a('<i class="fa fa-trash"></i>', ['delete', 'id' => $model->id], [

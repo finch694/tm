@@ -31,8 +31,8 @@ class TaskController extends Controller
                 'rules' => [
                     [
                         'actions' => [
-                            'index', 'managed-tasks', 'created-tasks', 'unassigned-tasks', 'my-tasks', 'download',
-                            'my-active-tasks', 'my-closed-tasks', 'view', 'create', 'update', 'delete', 'modal'
+                            'managed-tasks', 'created-tasks',
+                            'create', 'update', 'delete', 'modal'
                         ],
                         'allow' => true,
                         'roles' => ['manager'],
@@ -40,7 +40,7 @@ class TaskController extends Controller
                     [
                         'actions' => [
                             'index', 'unassigned-tasks', 'my-tasks', 'download', 'modal-image',
-                            'my-active-tasks', 'my-closed-tasks', 'view', 'modal', 'change-status'
+                            'my-active-tasks', 'my-closed-tasks', 'view', 'change-status'
                         ],
                         'allow' => true,
                         'roles' => ['user'],
@@ -331,10 +331,11 @@ class TaskController extends Controller
     public function actionModal($id, $mod)
     {
         $model = $this->findModel($id);
-        if ($mod === 'manager' && !Yii::$app->user->can('admin')) {
-            return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
-        } else {
+        if (Yii::$app->user->can('admin') || $model->manager_id === Yii::$app->user->getId()
+            || ($model->user_id === Yii::$app->user->getId() && $mod==='status')) {
             return $this->taskCreateOrUpdate($model, 'modal-change', $mod);
+        } else {
+            return 'error';
         }
     }
     public function actionModalImage($id)

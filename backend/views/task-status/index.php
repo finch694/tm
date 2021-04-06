@@ -18,7 +18,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
     <p>
-        <?= Html::a('Create Task Status', ['create'], ['class' => 'btn btn-success']) ?>
+        <?php if (Yii::$app->user->can('admin')) {
+            echo Html::a('Create Task Status', ['create'], ['class' => 'btn btn-success']);
+        }?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -37,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'deletedAt',
                 'label' => 'Status',
-                'filter' => ['is'=>'Active','is not'=>'Deleted'],//смахивает на говнокод
+                'filter' => ['active'=>'Active','deleted'=>'Deleted'],
                 'value' => function ($model) {
                     return ($model->deletedAt) ? ' Deleted at ' . date("Y-m-d", $model->deletedAt) : "Active";
                 }
@@ -45,6 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'finally:boolean',
             [
                 'class' => 'yii\grid\ActionColumn',
+                'visible' => Yii::$app->user->can('admin'),
                 'visibleButtons' => [
                     'delete' => function ($model) {
                         return $model->deletedAt == null;

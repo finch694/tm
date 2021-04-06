@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Tasks', 'url' => [Yii::$app->user-
 $this->params['breadcrumbs'][] = $model->title;
 ImageAsset::register($this);
 ModalAsset::register($this);
-$btnClass = Yii::$app->user->can('manager') ? 'btn mod' : '';
+$btnClass = Yii::$app->user->can('admin') || $model->manager_id == Yii::$app->user->getId() && !$model->deletedAt ? 'btn mod' : '';
 $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
 ?>
 <div class="task-view">
@@ -45,7 +45,8 @@ $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
                     <!-- Attachment -->
                     <div class="clearfix bg-info">
                         <?php foreach ($model->attachmentFiles as $file) : ?>
-                            <div class="container-img file" title="<?=$file->native_name?>" data-key="<?= $model->id ?>"
+                            <div class="container-img file" title="<?= $file->native_name ?>"
+                                 data-key="<?= $model->id ?>"
                                  style="background: url('<?= Url::base(true) . Yii::$app->storage->getImgPreview($file->name) ?>');">
                                 <a href="/task/download?id=<?= $file->id ?>" data-pjax="0"><i
                                             class="glyphicon glyphicon-save"></i> </a>
@@ -61,7 +62,7 @@ $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
                 </div>
             </div>
             <div class="box-footer box-comments <?= $mainBG ?>">
-                <?php if (Yii::$app->user->can('manager') || !$model->status->finally && $model->user->id === Yii::$app->user->getId()) : ?>
+                <?php if (Yii::$app->user->can('admin') or (!$model->status->finally && !$model->deletedAt && $model->user->id === Yii::$app->user->getId())): ?>
                     <div class="btn-group">
                         <button type="button" class="btn btn-info btn-flat btn-xs">Change status</button>
                         <button type="button" class="btn btn-info btn-flat btn-xs dropdown-toggle"
@@ -104,10 +105,8 @@ $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
                 <div class="pull-right">
                     <?php
                     if (Yii::$app->user->can('admin')) {
-                        echo Html::a('<i class="fa fa-cogs"></i>', ['update', 'id' => $model->id], [
-                            'class' => 'btn btn-primary btn-flat margin-r-5 btn-xs',
-                            'title' => 'update'
-                        ]);
+                        echo Html::a('<i class="fa fa-cogs"></i>', ['update', 'id' => $model->id], ['class' => 'btn btn-primary btn-flat margin-r-5 btn-xs',
+                            'title' => 'update']);
                     }
                     if (
                         (Yii::$app->user->can('admin')
@@ -117,27 +116,20 @@ $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
                         (
                             Yii::$app->user->can('manager')
                             && !$model->deletedAt
-                            && $model->manager->id === Yii::$app->user->getId()
+                            && $model->manager_id === Yii::$app->user->getId()
+                            && $model->status->finally
                         )
                     ) {
-                        echo Html::a('<i class="fa fa-trash"></i>', ['delete', 'id' => $model->id], [
-                            'class' => 'btn btn-danger btn-flat margin-r-5 btn-xs',
-                            'data' => [
-                                'confirm' => 'Are you sure you want to delete this task?',
-                                'method' => 'post',
-                            ],
-                            'title' => 'delete'
-                        ]);
+                        echo Html::a('<i class="fa fa-trash"></i>', ['delete', 'id' => $model->id], ['class' => 'btn btn-danger btn-flat margin-r-5 btn-xs',
+                            'data' => ['confirm' => 'Are you sure you want to delete this task?',
+                                'method' => 'post',],
+                            'title' => 'delete']);
                     }
                     if (Yii::$app->user->can('admin') && $model->deletedAt) {
-                        echo Html::a('<i class="fa fa-reply"></i>', ['recover', 'id' => $model->id], [
-                            'class' => 'btn btn-info btn-flat margin-r-5 btn-xs',
-                            'data' => [
-                                'confirm' => 'Are you sure you want to recover this task?',
-                                'method' => 'post',
-                            ],
-                            'title' => 'recover'
-                        ]);
+                        echo Html::a('<i class="fa fa-reply"></i>', ['recover', 'id' => $model->id], ['class' => 'btn btn-info btn-flat margin-r-5 btn-xs',
+                            'data' => ['confirm' => 'Are you sure you want to recover this task?',
+                                'method' => 'post',],
+                            'title' => 'recover']);
                     }
                     ?>
                     <small class="pull-right label bg-gray-active <?= Yii::$app->user->can('admin') ? $btnClass : '' ?> manager"

@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'value')->textInput(['type'=>'number']) ?>
+    <?= $form->field($model, 'value')->textInput(['type'=>'number', 'title'=>'The numerical value of the priority. (the less, the more priority)']) ?>
 
     <?= $form->field($model, 'active')->checkbox([ 'value' => '1', 'checked ' => true]) ?>
 
