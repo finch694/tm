@@ -46,8 +46,7 @@ $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
                         <?php foreach ($model->attachmentFiles as $file) : ?>
                             <div class="container-img file" title="<?=$file->native_name?>" data-key="<?= $model->id ?>"
                                  style="background: url('<?= Url::base(true) . Yii::$app->storage->getImgPreview($file->name) ?>');">
-                                <a href="/task/download?id=<?= $file->id ?>" data-pjax="0"><i
-                                            class="glyphicon glyphicon-save"></i> </a>
+                                <?= Html::a('<i class="glyphicon glyphicon-save"></i>',['/task/download?id='.$file->id],['data-pjax' => 0])?>
                             </div>
                         <?php endforeach; ?>
                     </div>

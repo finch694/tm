@@ -149,6 +149,7 @@ class TaskController extends Controller
             ->select(['name', 'id'])
             ->andWhere(['active' => true])
             ->indexBy('id')
+            ->orderBy('value')
             ->asArray()
             ->column();
         $managerList = User::find()
@@ -250,6 +251,7 @@ class TaskController extends Controller
             ->select(['name', 'id'])
             ->andWhere(['active' => true])
             ->indexBy('id')
+            ->orderBy('value')
             ->asArray()
             ->column();
         $statusColor = TaskStatus::find()

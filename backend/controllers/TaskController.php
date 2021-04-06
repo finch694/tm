@@ -133,6 +133,7 @@ class TaskController extends Controller
             ->select(['name', 'id'])
             ->andWhere(['active' => true])
             ->indexBy('id')
+            ->orderBy('value')
             ->asArray()
             ->column();
 
@@ -216,6 +217,7 @@ class TaskController extends Controller
             ->select(['name', 'id'])
             ->andWhere(['active' => true])
             ->indexBy('id')
+            ->orderBy('value')
             ->asArray()
             ->column();
         $statusColor = TaskStatus::find()
@@ -239,12 +241,7 @@ class TaskController extends Controller
                     $this->saveFiles($files, $model->id);
                 }
                 $this->log($view, $model->title, $model->id);
-//                if ($view === 'modal-change') {
-//                var_dump(Yii::$app->user->returnUrl);exit();
-//                    return $this->redirect('/admin/'.Yii::$app->user->returnUrl ?: Yii::$app->homeUrl);
-//                } else {
                 return $this->redirect(Yii::$app->user->returnUrl ?: Yii::$app->homeUrl);
-//                }
             }
         }
         if ($view === 'modal-change') {
@@ -299,12 +296,9 @@ class TaskController extends Controller
     public
     function actionModal($id, $mod)
     {
-//        Yii::$app->user->returnUrl = Yii::$app->request->url;
-
         $model = $this->findModel($id);
 
         return $this->taskCreateOrUpdate($model, 'modal-change', $mod);
-
     }
 
     public
