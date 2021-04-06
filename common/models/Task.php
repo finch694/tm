@@ -73,14 +73,14 @@ class Task extends ActiveRecord
             'title' => 'Title',
             'text' => 'Text',
             'files' => 'Files',
-            'status_id' => 'Status ID',
-            'user_id' => 'User ID',
-            'manager_id' => 'Manager ID',
-            'creator_id' => 'Creator ID',
+            'status_id' => 'Status',
+            'user_id' => 'User',
+            'manager_id' => 'Manager',
+            'creator_id' => 'Creator',
             'createdAt' => 'Created At',
             'updatedAt' => 'Updated At',
             'deletedAt' => 'Deleted At',
-            'priority_id' => 'Priority ID',
+            'priority_id' => 'Priority',
         ];
     }
 
