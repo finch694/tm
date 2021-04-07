@@ -3,7 +3,7 @@
 Small application for task managment. The application was created for the purpose of acquiring practical skills. 
 ******
 #DESCRIPTION
-The application implements three roles[^1] for users: 
+The application implements three roles<sup id="a1">[1](#f1)</sup> for users: 
 1. User (executor)(can change the statuses of assigned tasks and close them by setting one of the final statuses)
 2. Manager (can create a task, assign it to a user, delete/update a managed task)
 3. Administrator (can create a priority/status for tasks, menage users, menage all tasks, view log)
@@ -78,7 +78,7 @@ ln -s ../../backend/web/uploads/
 ln -s ../../backend/web/img/
 ```
 
-5. Set configuration of your web server[^2]:
+5. Set configuration of your web server<sup id="a2">[2](#f2)</sup>:
 Example for nginx:
 ```
 server {
@@ -214,7 +214,7 @@ Example for nginx:
     </Directory>
 </VirtualHost>
 ```
+***
+<b id="f1">1</b> Each subsequent role includes the functionality of the previous one. [↩](#a1)
 
-[^1]:Each subsequent role includes the functionality of the previous one
-[^2]:https://github.com/mickgeek/yii2-advanced-one-domain-config
-
+<b id="f2">2</b> https://github.com/mickgeek/yii2-advanced-one-domain-config [↩](#a2)
