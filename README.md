@@ -72,13 +72,20 @@ return [
    1. Log migration 
    ```/path/to/php-bin/php /path/to/yii-application/yii migrate --migrationPath=@yii/log/migrations/```
 
-4. Create symlinks 
-```cd [/path/to/application]/tm/frontend/web
+4. Run rbac init
+```
+/path/to/php-bin/php /path/to/yii-application/yii rbac-start/init
+```
+
+5. Create symlinks 
+```
+cd [/path/to/application]/tm/frontend/web
 ln -s ../../backend/web/uploads/ 
 ln -s ../../backend/web/img/
 ```
 
-5. Set configuration of your web server<sup id="a2">[2](#f2)</sup>:
+6. Set configuration of your web server<sup id="a2">[2](#f2)</sup>:
+
 Example for nginx:
 ```
 server {
@@ -157,7 +164,7 @@ server {
     }
 }
 ```
-Example for nginx:
+Example for apache:
 ```
 <VirtualHost *:80>
     ServerName advanced.local
@@ -213,6 +220,10 @@ Example for nginx:
         RewriteRule ^ index.php [L]
     </Directory>
 </VirtualHost>
+```
+7. To assign the first role 'Adminisrator' to registered user
+```
+/path/to/php-bin/php /path/to/yii-application/yii rbac-admin-assign/init [id user]
 ```
 ***
 <b id="f1">1</b> Each subsequent role includes the functionality of the previous one. [↩](#a1)
