@@ -10,9 +10,7 @@ use yii\grid\GridView;
 $this->title = 'Log';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="log-index">
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+<div class="log-index" style="overflow-x: auto;">
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -25,10 +23,6 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-//            'level',
-//            'category',
-//            'prefix:ntext',
             [
                 'attribute' => 'log_time',
                 'value' => 'log_time',

@@ -1,8 +1,10 @@
 <?php
+
 namespace common\models;
 
 use Yii;
 use yii\base\Model;
+use yii\validators\EmailValidator;
 
 /**
  * Login form
@@ -15,6 +17,16 @@ class LoginForm extends Model
 
     private $_user;
 
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'username' => 'Username/Email',
+            'password' => 'Password'
+        ];
+    }
 
     /**
      * {@inheritdoc}
@@ -58,7 +70,7 @@ class LoginForm extends Model
         if ($this->validate()) {
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
         }
-        
+
         return false;
     }
 
@@ -70,7 +82,12 @@ class LoginForm extends Model
     protected function getUser()
     {
         if ($this->_user === null) {
-            $this->_user = User::findByUsername($this->username);
+            $validator = new EmailValidator();
+            if ($validator->validate($this->username)) {
+                $this->_user = User::findByEmail($this->username);
+            } else {
+                $this->_user = User::findByUsername($this->username);
+            }
         }
 
         return $this->_user;
