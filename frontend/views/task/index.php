@@ -44,8 +44,8 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);
     ?>
     <div class="summary">Showing <b>
-            <?= $dataProvider->pagination->offset + 1; ?>
-            -<?= ($dataProvider->pagination->page + 1) * $dataProvider->pagination->pageSize > $dataProvider->pagination->totalCount ? $dataProvider->pagination->totalCount : ($dataProvider->pagination->page + 1) * $dataProvider->pagination->pageSize; ?> </b>
+            <?= $dataProvider->pagination->offset + boolval($dataProvider->pagination->totalCount); ?>
+            - <?= ($dataProvider->pagination->page + 1) * $dataProvider->pagination->pageSize > $dataProvider->pagination->totalCount ? $dataProvider->pagination->totalCount : ($dataProvider->pagination->page + 1) * $dataProvider->pagination->pageSize; ?> </b>
         of <b><?= $dataProvider->pagination->totalCount; ?></b> task.
     </div>
     <div class="container-fluid">
