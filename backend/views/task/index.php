@@ -191,5 +191,5 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php Pjax::end(); ?>
 
 </div>
-<?= $this->render('../layouts/_modal-template-sm', ['id' => 'modal-change-sm']) ?>
-<?= $this->render('../layouts/_modal-template-md', ['id' => 'modal-change-md']) ?>
+<?= $this->render('../layouts/_modal-template', ['id' => 'modal-image','size'=>'md']) ?>
+<?= $this->render('../layouts/_modal-template', ['id' => 'modal-change','size'=>'sm']) ?>

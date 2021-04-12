@@ -12,7 +12,9 @@ use yii\widgets\ActiveForm;
 /* @var array $statusColor */
 /* @var array $priorityList */
 /* @var string $changeMod */
-$statusColor = array_map(function ($val){ return  ["style"=>"background-color:".$val];},$statusColor);
+$statusColor = array_map(function ($val) {
+    return ["style" => "background-color:" . $val];
+}, $statusColor);
 ?>
 
 <div class="change-form">
@@ -28,7 +30,7 @@ $statusColor = array_map(function ($val){ return  ["style"=>"background-color:".
         <?php
         switch ($changeMod) {
             case 'user':
-                echo $form->field($model, 'user_id')->widget(Select2::class,[
+                echo $form->field($model, 'user_id')->widget(Select2::class, [
                     'data' => $userList,
                     'theme' => Select2::THEME_DEFAULT,
                     'options' => ['placeholder' => 'Select executor ...'],
@@ -46,6 +48,16 @@ $statusColor = array_map(function ($val){ return  ["style"=>"background-color:".
                 echo $form->field($model, 'status_id')->dropDownList($statusList, ['prompt' => 'select status',
                     'options' => $statusColor])
                     ->label('Status');
+                break;
+            case 'manager':
+                echo $form->field($model, 'user_id')->widget(Select2::class, [
+                    'data' => $managerList,
+                    'theme' => Select2::THEME_DEFAULT,
+                    'options' => ['placeholder' => 'Select manager ...', 'class' => 'form-control'],
+                    'pluginOptions' => [
+                        'allowClear' => true
+                    ],
+                ])->label('Manager');
                 break;
             default:
                 echo "error";

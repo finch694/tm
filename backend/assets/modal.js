@@ -17,7 +17,7 @@ $(function () {
                 mod = 'manager';
             }
             let sub =  $(location).attr('href').indexOf('admin') + 1 ? '/admin' : '';
-            $('#modal-change-sm').modal('show').find('.modal-body').load(sub + '/task/modal?id=' + data.key + '&mod=' + mod);
+            $('#modal-change').modal('show').find('.modal-body').load(sub + '/task/modal?id=' + data.key + '&mod=' + mod);
         }
     );
     $(document).on('click', '.file', function () {
@@ -29,7 +29,7 @@ $(function () {
             }
             let sub = $(location).attr('href').indexOf('admin') + 1 ? '/admin' : '';
 
-            $('#modal-change-md').modal('show').find('.modal-body').load(sub + '/task/modal-image?id=' + data.key);
+            $('#modal-image').modal('show').find('.modal-body').load(sub + '/task/modal-image?id=' + data.key);
         }
     );
     $(document).on('click', '.file a', function (e) {

@@ -21,12 +21,9 @@ $this->title = $title;
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="task-index">
-
-
     <div class="box box-info collapsed-box">
         <div class="box-header with-border" data-widget="collapse">
             <h3 class="box-title">Search</h3>
-
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
                 </button>
@@ -40,7 +37,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'managerList' => $managerList,
             ]); ?>
         </div>
-
     </div>
     <?php
     echo LinkPager::widget([
@@ -84,7 +80,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <div class="help-block small"> <?= $model->deletedAt ? 'Deleted' : 'Updated' ?>
                                         at: <?= date("Y-m-d H:i:s", $model->updatedAt) ?></div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="box-body" style="display: none;">
@@ -103,7 +98,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?php endforeach; ?>
                                 </div>
                             <?php endif; ?>
-
                         </div>
                         <div class="box-tools" style="background-color: <?= $model->status->color ?>">
                             <div class="fc-header-left <?= $btnClass ?> status btn-xs text-black"
@@ -130,7 +124,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         ?>
                                     </ul>
                                 </div>
-
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-success btn-flat btn-xs">Finish task</button>
                                     <button type="button" class="btn btn-success btn-flat btn-xs dropdown-toggle"
@@ -157,7 +150,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?php endif; ?>
                             <div class="pull-right">
                                 <?php
-                                if (Yii::$app->user->can('admin')or
+                                if (Yii::$app->user->can('admin') or
                                     (
                                         Yii::$app->user->can('manager')
                                         && !$model->deletedAt
@@ -210,6 +203,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php endforeach; ?>
         </div>
     </div>
-    <?= $this->render('../layouts/_modal-template-sm', ['id' => 'modal-change-sm']) ?>
-    <?= $this->render('../layouts/_modal-template-md', ['id' => 'modal-change-md']) ?>
+</div>
+<?= $this->render('../layouts/_modal-template', ['id' => 'modal-image', 'size' => 'md']) ?>
+<?= $this->render('../layouts/_modal-template', ['id' => 'modal-change', 'size' => 'sm']) ?>
 

@@ -141,6 +141,6 @@ $mainBG = $model->deletedAt ? 'bg-black-gradient' : 'bg-gray';
 
     </div>
 </div>
-<?= $this->render('../layouts/_modal-template-sm', ['id' => 'modal-change-sm']) ?>
-<?= $this->render('../layouts/_modal-template-md', ['id' => 'modal-change-md']) ?>
+<?= $this->render('../layouts/_modal-template', ['id' => 'modal-image','size'=>'md']) ?>
+<?= $this->render('../layouts/_modal-template', ['id' => 'modal-change','size'=>'sm']) ?>
 
