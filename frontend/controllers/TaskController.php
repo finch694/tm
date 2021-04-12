@@ -80,14 +80,14 @@ class TaskController extends Controller
     public function actionManagedTasks()
     {
         $params['TaskSearch'] = ['manager_id' => Yii::$app->user->id, 'deletedAt' => 0];
-        $title = 'Controlled tasks by me';
+        $title = 'Controlled tasks by you';
         return $this->index($params, $title);
     }
 
     public function actionCreatedTasks()
     {
         $params['TaskSearch'] = ['creator_id' => Yii::$app->user->id, 'deletedAt' => 0];
-        $title = 'Tasks created by me';
+        $title = 'Tasks created by you';
         return $this->index($params, $title);
     }
 

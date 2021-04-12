@@ -11,7 +11,6 @@ use yii\widgets\ActiveForm;
 /* @var $statusList array */
 /* @var $managerList array */
 /* @var $priorityList array */
-
 ?>
 
 <div class="task-search">
@@ -31,7 +30,7 @@ use yii\widgets\ActiveForm;
     <div class="col-md-2">
         <?= $form->field($model, 'priority_id')->dropDownList($priorityList, ['prompt' => 'Select priority'])->label('Priority') ?>
     </div>
-    
+
     <div class="col-md-2">
         <?php echo $form->field($model, 'createdAt')->widget(DatePicker::class, [
             'model' => $model,
@@ -57,9 +56,9 @@ use yii\widgets\ActiveForm;
         ]) ?>
     </div>
     <div class="col-md-2">
-        <?php echo $form->field($model, 'manager_id')->widget(Select2::class,[
+        <?php echo $form->field($model, 'manager_id')->widget(Select2::class, [
             'data' => $managerList,
-            'options' => ['placeholder' => 'Select a manager'],
+            'options' => ['placeholder' => 'Select a manager', 'disabled' => Yii::$app->request->pathInfo === 'task/managed-tasks'],
             'pluginOptions' => [
                 'allowClear' => true
             ],
