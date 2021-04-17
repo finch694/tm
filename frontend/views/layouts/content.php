@@ -49,14 +49,14 @@ use dmstr\widgets\Alert;
 
 <aside class="control-sidebar control-sidebar-dark">
     <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-        <li><a href="#control-sidebar-info-tab" data-toggle="tab"><i class="fa fa-info"></i></a></li>
+        <li class="active"><a href="#control-sidebar-info-tab" data-toggle="tab"><i class="fa fa-info"></i></a></li>
         <?php if (Yii::$app->user->can('manager')) : ?>
             <li><a href="#control-sidebar-active-tab" data-toggle="tab"><i class="fa fa-circle-o"></i></a></li>
             <li><a href="#control-sidebar-closed-tab" data-toggle="tab"><i class="fa fa-check-circle-o"></i></a></li>
         <?php endif; ?>
     </ul>
     <div class="tab-content">
-        <div class="tab-pane" id="control-sidebar-info-tab">
+        <div class="tab-pane active" id="control-sidebar-info-tab">
             <?= Yii::$app->user->can('manager') ? Html::a('Create Task', ['task/create'], ['class' => 'center-block btn btn-success btn-flat']) : '' ?>
             <?= TasksSummary::widget() ?>
         </div>
