@@ -36,6 +36,7 @@ class TaskPriority extends ActiveRecord
             [['active'], 'boolean'],
             [['active'], 'default','value' => true],
             [['name'], 'string', 'max' => 255],
+            [['name'],'filter','filter' => '\yii\helpers\HtmlPurifier::process']
         ];
     }
 

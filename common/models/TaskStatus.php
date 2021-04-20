@@ -36,6 +36,7 @@ class TaskStatus extends ActiveRecord
             [['text', 'color'], 'string', 'max' => 255],
             [['deletedAt'], 'safe'],
             [['deletedAt'], 'default', 'value' => null],
+            [['text'],'filter','filter' => '\yii\helpers\HtmlPurifier::process']
         ];
     }
 
