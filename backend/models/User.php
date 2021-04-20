@@ -45,7 +45,8 @@ class User extends CommonUser
             [['created_at'], 'integer'],
             [['password_reset_token'], 'unique'],
             [['username'], 'unique'],
-            [['roleName'], 'safe']
+            [['roleName'], 'safe'],
+            [['username','email'],'filter','filter' => '\yii\helpers\HtmlPurifier::process']
         ]);
     }
 
