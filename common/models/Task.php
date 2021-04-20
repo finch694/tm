@@ -200,7 +200,6 @@ class Task extends ActiveRecord
 
     public function getTextWithLinks()
     {
-
         return preg_replace("/(^|[\n ])([\w]*?)((ht|f)tp(s)?:\/\/[\w]+[^ ,\"\n\r\t<]*)/is",
             "$1$2<a href=\"$3\" >$3</a>", strip_tags($this->text));
     }
